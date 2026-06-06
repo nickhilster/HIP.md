@@ -1,0 +1,43 @@
+{
+  "name": "create-hip",
+  "version": "1.0.0",
+  "description": "Generate a HIP.md (Human Interface Protocol) for your repo — calibrates how AI agents collaborate with you",
+  "type": "module",
+  "exports": {
+    ".": "./src/lib.js"
+  },
+  "bin": {
+    "create-hip": "src/index.js"
+  },
+  "files": [
+    "src",
+    "examples"
+  ],
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test src/__tests__/generator.test.js src/__tests__/hip.test.js src/__tests__/cli.test.js"
+  },
+  "dependencies": {
+    "@clack/prompts": "^0.9.0"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "hip",
+    "hip.md",
+    "ai",
+    "agent",
+    "collaboration",
+    "claude",
+    "cursor",
+    "copilot",
+    "aider"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nickhilster/create-hip.git"
+  },
+  "homepage": "https://github.com/nickhilster/spec"
+}

@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HIP.md — Human Interface Protocol</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0e0f11;
+    --bg2: #16181c;
+    --bg3: #1e2026;
+    --border: rgba(255,255,255,0.07);
+    --border2: rgba(255,255,255,0.13);
+    --text: #e8e6df;
+    --muted: #7a7870;
+    --accent: #c8f564;
+    --accent2: #a8d44a;
+    --blue: #4a9eff;
+    --mono: 'DM Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+  }
+
+  html { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 15px; line-height: 1.6; }
+
+  body {
+    min-height: 100vh;
+    background: var(--bg);
+    background-image:
+      radial-gradient(ellipse 60% 40% at 80% 10%, rgba(200,245,100,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse 40% 60% at 10% 80%, rgba(74,158,255,0.03) 0%, transparent 60%);
+  }
+
+  /* ── LAYOUT ── */
+  .page { max-width: 760px; margin: 0 auto; padding: 60px 24px 120px; }
+
+  /* ── HEADER ── */
+  header { margin-bottom: 56px; }
+
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 32px;
+  }
+
+  .wordmark-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 12px var(--accent);
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 12px var(--accent); }
+    50% { opacity: 0.6; box-shadow: 0 0 6px var(--accent); }
+  }
+
+  .wordmark-text {
+    font-family: var(--mono);
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    font-family: var(--sans);
+    font-size: clamp(28px, 5vw, 42px);
+    font-weight: 300;
+    line-height: 1.15;
+    color: var(--text);
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+
+  h1 em {
+    font-style: normal;
+    color: var(--accent);
+  }
+
+  .subtitle {
+    font-size: 15px;
+    color: var(--muted);
+    max-width: 480px;
+    line-height: 1.7;
+  }
+
+  /* ── PROGRESS ── */
+  .progress-wrap {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 40px;
+  }
+
+  .progress-pip {
+    height: 2px;
+    flex: 1;
+    border-radius: 2px;
+    background: var(--border2);
+    transition: background 0.3s ease;
+  }
+
+  .progress-pip.active { background: var(--accent); }
+  .progress-pip.done { background: rgba(200,245,100,0.4); }
+
+  /* ── SECTIONS ── */
+  .section {
+    margin-bottom: 2px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .section.open { border-color: var(--border2); }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 22px;
+    cursor: pointer;
+    user-select: none;
+    background: var(--bg2);
+    transition: background 0.15s;
+  }
+
+  .section-header:hover { background: var(--bg3); }
+
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--muted);
+    min-width: 20px;
+  }
+
+  .section-title {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    flex: 1;
+  }
+
+  .section-status {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    transition: color 0.2s;
+  }
+
+  .section-status.done { color: var(--accent); }
+
+  .section-chevron {
+    width: 16px; height: 16px;
+    color: var(--muted);
+    transition: transform 0.2s;
+    flex-shrink: 0;
+  }
+
+  .section.open .section-chevron { transform: rotate(180deg); }
+
+  .section-body {
+    display: none;
+    padding: 0 22px 22px;
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+  }
+
+  .section.open .section-body { display: block; }
+
+  .section-hint {
+    font-size: 13px;
+    color: var(--muted);
+    padding: 14px 0 16px;
+    line-height: 1.6;
+  }
+
+  /* ── CHIPS ── */
+  .chip-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+  }
+
+  .chip {
+    padding: 7px 14px;
+    border-radius: 20px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--muted);
+    font-family: var(--sans);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+    white-space: nowrap;
+  }
+
+  .chip:hover {
+    border-color: rgba(255,255,255,0.25);
+    color: var(--text);
+    background: var(--bg3);
+  }
+
+  .chip.selected {
+    background: rgba(200,245,100,0.1);
+    border-color: rgba(200,245,100,0.4);
+    color: var(--accent);
+  }
+
+  /* ── FLUENCY SLIDERS ── */
+  .fluency-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 28px;
+  }
+
+  @media (max-width: 520px) { .fluency-grid { grid-template-columns: 1fr; } }
+
+  .fluency-row { display: flex; align-items: center; gap: 10px; }
+
+  .fluency-label {
+    font-size: 13px;
+    color: var(--muted);
+    min-width: 90px;
+  }
+
+  input[type=range] {
+    -webkit-appearance: none;
+    flex: 1;
+    height: 2px;
+    background: var(--border2);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(200,245,100,0.4);
+    transition: transform 0.1s;
+  }
+
+  input[type=range]::-webkit-slider-thumb:hover { transform: scale(1.2); }
+  input[type=range]::-moz-range-thumb {
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: none;
+    cursor: pointer;
+  }
+
+  .fluency-val {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+    min-width: 24px;
+    text-align: right;
+  }
+
+  .fluency-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--muted);
+    padding: 4px 0 14px;
+    font-family: var(--mono);
+  }
+
+  /* ── TAGS INPUT ── */
+  .boundary-suggestions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 12px;
+  }
+
+  .tags-wrap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 10px;
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    background: var(--bg3);
+    min-height: 44px;
+    cursor: text;
+    transition: border-color 0.15s;
+  }
+
+  .tags-wrap:focus-within { border-color: rgba(200,245,100,0.35); }
+
+  .tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    background: rgba(200,245,100,0.1);
+    border: 1px solid rgba(200,245,100,0.25);
+    color: var(--accent);
+    border-radius: 12px;
+    padding: 2px 8px 2px 10px;
+    font-size: 12px;
+    font-family: var(--mono);
+    animation: tagIn 0.15s ease;
+  }
+
+  @keyframes tagIn { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+
+  .tag-x {
+    cursor: pointer;
+    opacity: 0.5;
+    font-size: 14px;
+    line-height: 1;
+    transition: opacity 0.1s;
+  }
+  .tag-x:hover { opacity: 1; }
+
+  .tag-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 13px;
+    color: var(--text);
+    font-family: var(--sans);
+    min-width: 120px;
+    flex: 1;
+    caret-color: var(--accent);
+  }
+
+  .tag-input::placeholder { color: var(--muted); }
+
+  /* ── DONE CHIPS (multi) ── */
+  .done-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+
+  /* ── CTA ── */
+  .cta-wrap { margin-top: 36px; display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+
+  .btn-generate {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    border: 1px solid rgba(200,245,100,0.5);
+    background: rgba(200,245,100,0.08);
+    color: var(--accent);
+    font-family: var(--sans);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    letter-spacing: 0.01em;
+  }
+
+  .btn-generate:hover {
+    background: rgba(200,245,100,0.15);
+    border-color: rgba(200,245,100,0.7);
+    box-shadow: 0 0 20px rgba(200,245,100,0.1);
+  }
+
+  .btn-generate:active { transform: scale(0.98); }
+
+  .btn-reset {
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-family: var(--sans);
+    transition: color 0.15s;
+  }
+
+  .btn-reset:hover { color: var(--text); }
+
+  /* ── OUTPUT ── */
+  .output-section {
+    margin-top: 48px;
+    border: 1px solid rgba(200,245,100,0.2);
+    border-radius: 12px;
+    overflow: hidden;
+    display: none;
+    animation: fadeUp 0.3s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .output-section.visible { display: block; }
+
+  .output-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    background: rgba(200,245,100,0.05);
+    border-bottom: 1px solid rgba(200,245,100,0.15);
+  }
+
+  .output-filename {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .output-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+  }
+
+  .output-actions { display: flex; gap: 8px; }
+
+  .btn-action {
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid var(--border2);
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    font-family: var(--sans);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-action:hover {
+    background: var(--bg3);
+    color: var(--text);
+    border-color: rgba(255,255,255,0.2);
+  }
+
+  .btn-action.primary {
+    border-color: rgba(200,245,100,0.4);
+    color: var(--accent);
+  }
+
+  .btn-action.primary:hover {
+    background: rgba(200,245,100,0.1);
+    border-color: rgba(200,245,100,0.6);
+  }
+
+  .copied-flash {
+    font-size: 12px;
+    color: var(--accent);
+    font-family: var(--mono);
+    display: none;
+  }
+
+  .output-pre {
+    padding: 22px 20px;
+    background: var(--bg);
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.8;
+    color: var(--text);
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-x: auto;
+  }
+
+  /* syntax-ish coloring */
+  .out-comment { color: var(--muted); }
+  .out-heading { color: var(--accent); font-weight: 500; }
+  .out-subheading { color: #7ecfff; }
+  .out-value { color: var(--text); }
+  .out-bullet { color: var(--muted); }
+
+  /* ── FOOTER ── */
+  footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .footer-left {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .footer-right {
+    display: flex;
+    gap: 20px;
+  }
+
+  .footer-link {
+    font-size: 12px;
+    color: var(--muted);
+    text-decoration: none;
+    transition: color 0.15s;
+    font-family: var(--mono);
+  }
+
+  .footer-link:hover { color: var(--text); }
+
+  /* ── VALIDATION HINT ── */
+  .validation-hint {
+    font-size: 12px;
+    color: #ff6b6b;
+    margin-top: 8px;
+    display: none;
+    font-family: var(--mono);
+  }
+
+  .validation-hint.show { display: block; }
+
+  /* ── OPTIONAL BADGE ── */
+  .optional-badge {
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--muted);
+    border: 1px solid var(--border2);
+    border-radius: 4px;
+    padding: 1px 6px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-left: 6px;
+    vertical-align: middle;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <header>
+    <div class="wordmark">
+      <div class="wordmark-dot"></div>
+      <span class="wordmark-text">HIP.md — Human Interface Protocol</span>
+    </div>
+    <h1>Calibrate how your<br>agent works with <em>you</em></h1>
+    <p class="subtitle">Answer five questions. Get a ready-to-commit <code style="font-family:var(--mono);font-size:13px;color:var(--accent)">HIP.md</code> file that tells AI agents how to collaborate with you in this repo.</p>
+  </header>
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap" id="progress-bar">
+    <div class="progress-pip active" id="pip-0"></div>
+    <div class="progress-pip" id="pip-1"></div>
+    <div class="progress-pip" id="pip-2"></div>
+    <div class="progress-pip" id="pip-3"></div>
+    <div class="progress-pip" id="pip-4"></div>
+  </div>
+
+  <!-- SECTION 1: ROLE -->
+  <div class="section open" id="sec-0">
+    <div class="section-header" onclick="toggleSection(0)">
+      <span class="section-num">01</span>
+      <span class="section-title">Your role in this repo</span>
+      <span class="section-status" id="status-0">required</span>
+      <svg class="section-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 6l4 4 4-4"/>
+      </svg>
+    </div>
+    <div class="section-body">
+      <p class="section-hint">Pick the closest match. This tells the agent how to frame help and how much context to assume.</p>
+      <div class="chip-grid" id="role-chips" data-required="true">
+        <div class="chip" data-val="main developer">Main developer</div>
+        <div class="chip" data-val="technical founder">Technical founder</div>
+        <div class="chip" data-val="non-technical founder">Non-technical founder</div>
+        <div class="chip" data-val="designer-builder">Designer-builder</div>
+        <div class="chip" data-val="product manager">Product manager</div>
+        <div class="chip" data-val="student / learner">Student / learner</div>
+        <div class="chip" data-val="maintainer">Maintainer</div>
+        <div class="chip" data-val="researcher">Researcher</div>
+        <div class="chip" data-val="domain expert">Domain expert</div>
+        <div class="chip" data-val="operator directing implementation">Operator directing implementation</div>
+      </div>
+      <div class="validation-hint" id="v-0">Select one to continue.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 2: FLUENCY -->
+  <div class="section" id="sec-1">
+    <div class="section-header" onclick="toggleSection(1)">
+      <span class="section-num">02</span>
+      <span class="section-title">Technical fluency</span>
+      <span class="section-status" id="status-1">required</span>
+      <svg class="section-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 6l4 4 4-4"/>
+      </svg>
+    </div>
+    <div class="section-body">
+      <p class="section-hint">Rate each area independently. 1 = beginner, 5 = fluent. There's no right answer — accuracy helps the agent calibrate.</p>
+      <div class="fluency-labels"><span>beginner</span><span>fluent</span></div>
+      <div class="fluency-grid">
+        <div class="fluency-row">
+          <span class="fluency-label">Code</span>
+          <input type="range" min="1" max="5" value="3" step="1" id="f-code" oninput="updateFluency(this,'fv-code')">
+          <span class="fluency-val" id="fv-code">3</span>
+        </div>
+        <div class="fluency-row">
+          <span class="fluency-label">Git</span>
+          <input type="range" min="1" max="5" value="3" step="1" id="f-git" oninput="updateFluency(this,'fv-git')">
+          <span class="fluency-val" id="fv-git">3</span>
+        </div>
+        <div class="fluency-row">
+          <span class="fluency-label">Terminal</span>
+          <input type="range" min="1" max="5" value="3" step="1" id="f-terminal" oninput="updateFluency(this,'fv-terminal')">
+          <span class="fluency-val" id="fv-terminal">3</span>
+        </div>
+        <div class="fluency-row">
+          <span class="fluency-label">Deployment</span>
+          <input type="range" min="1" max="5" value="3" step="1" id="f-deploy" oninput="updateFluency(this,'fv-deploy')">
+          <span class="fluency-val" id="fv-deploy">3</span>
+        </div>
+        <div class="fluency-row">
+          <span class="fluency-label">Architecture</span>
+          <input type="range" min="1" max="5" value="3" step="1" id="f-arch" oninput="updateFluency(this,'fv-arch')">
+          <span class="fluency-val" id="fv-arch">3</span>
+        </div>
+        <div class="fluency-row">
+          <span class="fluency-label">Database</span>
+          <input type="range" min="1" max="5" value="3" step="1" id="f-db" oninput="updateFluency(this,'fv-db')">
+          <span class="fluency-val" id="fv-db">3</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SECTION 3: AUTONOMY -->
+  <div class="section" id="sec-2">
+    <div class="section-header" onclick="toggleSection(2)">
+      <span class="section-num">03</span>
+      <span class="section-title">Autonomy level</span>
+      <span class="section-status" id="status-2">required</span>
+      <svg class="section-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 6l4 4 4-4"/>
+      </svg>
+    </div>
+    <div class="section-body">
+      <p class="section-hint">How much should the agent do before asking you? This is the most important HIP setting.</p>
+      <div class="chip-grid" id="autonomy-chips" data-required="true">
+        <div class="chip" data-val="ask before every meaningful change">Ask before every meaningful change</div>
+        <div class="chip" data-val="make small safe edits only">Small safe edits only</div>
+        <div class="chip" data-val="pause before structural decisions">Pause before structural decisions</div>
+        <div class="chip" data-val="act autonomously, summarize afterward">Act autonomously, summarize after</div>
+        <div class="chip" data-val="operate like a pair programmer">Pair programmer mode</div>
+        <div class="chip" data-val="operate like a delegated implementation partner">Delegated implementation partner</div>
+      </div>
+      <div class="validation-hint" id="v-2">Select one to continue.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 4: BOUNDARIES -->
+  <div class="section" id="sec-3">
+    <div class="section-header" onclick="toggleSection(3)">
+      <span class="section-num">04</span>
+      <span class="section-title">Approval required before touching</span>
+      <span class="section-status" id="status-3">required</span>
+      <svg class="section-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 6l4 4 4-4"/>
+      </svg>
+    </div>
+    <div class="section-body">
+      <p class="section-hint">The agent will always ask before changing these areas. Click suggestions or type your own and press Enter.</p>
+      <div class="boundary-suggestions" id="boundary-suggestions">
+        <div class="chip" data-target="boundary">auth</div>
+        <div class="chip" data-target="boundary">database schema</div>
+        <div class="chip" data-target="boundary">payments</div>
+        <div class="chip" data-target="boundary">deployment config</div>
+        <div class="chip" data-target="boundary">env variables</div>
+        <div class="chip" data-target="boundary">security rules</div>
+        <div class="chip" data-target="boundary">migrations</div>
+        <div class="chip" data-target="boundary">legal copy</div>
+        <div class="chip" data-target="boundary">public copy</div>
+        <div class="chip" data-target="boundary">analytics</div>
+      </div>
+      <div class="tags-wrap" id="boundary-tags-wrap">
+        <input class="tag-input" id="boundary-input" placeholder="Add boundary, press Enter…" autocomplete="off">
+      </div>
+      <div class="validation-hint" id="v-3">Add at least one approval boundary.</div>
+    </div>
+  </div>
+
+  <!-- SECTION 5: DEFINITION OF DONE -->
+  <div class="section" id="sec-4">
+    <div class="section-header" onclick="toggleSection(4)">
+      <span class="section-num">05</span>
+      <span class="section-title">Definition of done</span>
+      <span class="section-status" id="status-4">required</span>
+      <svg class="section-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 6l4 4 4-4"/>
+      </svg>
+    </div>
+    <div class="section-body">
+      <p class="section-hint">What does "done" mean to you? Select all that apply. The agent won't declare work complete until these are met.</p>
+      <div class="done-chips" id="done-chips">
+        <div class="chip multi" data-val="code compiles and tests pass">Code compiles + tests pass</div>
+        <div class="chip multi" data-val="feature works locally">Feature works locally</div>
+        <div class="chip multi" data-val="deployed successfully">Deployed successfully</div>
+        <div class="chip multi" data-val="risks are clearly stated">Risks stated</div>
+        <div class="chip multi" data-val="changed files are summarized">Files summarized</div>
+        <div class="chip multi" data-val="next steps are clear">Next steps clear</div>
+        <div class="chip multi" data-val="changes are documented">Documented</div>
+        <div class="chip multi" data-val="I can explain the change to someone else">I can explain it to someone else</div>
+        <div class="chip multi" data-val="manual QA steps are provided">Manual QA steps provided</div>
+      </div>
+      <div class="validation-hint" id="v-4">Select at least one.</div>
+    </div>
+  </div>
+
+  <!-- OPTIONAL SECTION 6: EXTENDED -->
+  <div class="section" id="sec-5" style="margin-top: 16px; border-style: dashed;">
+    <div class="section-header" onclick="toggleSection(5)">
+      <span class="section-num">06</span>
+      <span class="section-title">Extended calibration <span class="optional-badge">optional</span></span>
+      <span class="section-status" id="status-5">skippable</span>
+      <svg class="section-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M4 6l4 4 4-4"/>
+      </svg>
+    </div>
+    <div class="section-body">
+      <p class="section-hint" style="margin-bottom: 20px;">Richer calibration. Fill in what's relevant, skip the rest.</p>
+
+      <p style="font-size:12px;font-family:var(--mono);color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em;">Explanation depth</p>
+      <div class="chip-grid" id="explain-chips" style="margin-bottom:20px;">
+        <div class="chip" data-val="explain step by step">Step by step</div>
+        <div class="chip" data-val="explain briefly">Briefly</div>
+        <div class="chip" data-val="explain tradeoffs only">Tradeoffs only</div>
+        <div class="chip" data-val="explain risks only">Risks only</div>
+        <div class="chip" data-val="explain only when asked">Only when asked</div>
+        <div class="chip" data-val="teach me as we go">Teach me as we go</div>
+        <div class="chip" data-val="result first, reasoning after">Result first, reasoning after</div>
+      </div>
+
+      <p style="font-size:12px;font-family:var(--mono);color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em;">Risk tolerance</p>
+      <div class="chip-grid" id="risk-chips" style="margin-bottom:20px;">
+        <div class="chip" data-val="conservative — preserve what works">Conservative</div>
+        <div class="chip" data-val="balanced — improve carefully">Balanced</div>
+        <div class="chip" data-val="prototype mode — move fast, polish later">Prototype mode</div>
+        <div class="chip" data-val="experimental — try bold changes">Experimental</div>
+        <div class="chip" data-val="production-safe — no risky changes without approval">Production-safe</div>
+      </div>
+
+      <p style="font-size:12px;font-family:var(--mono);color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em;">Decision style</p>
+      <div class="chip-grid" id="decision-chips" style="margin-bottom:20px;">
+        <div class="chip" data-val="give one clear recommendation">One clear recommendation</div>
+        <div class="chip" data-val="show tradeoffs, then recommend">Show tradeoffs, then recommend</div>
+        <div class="chip" data-val="offer options, let me choose">Offer options, I'll choose</div>
+        <div class="chip" data-val="optimize for speed">Optimize for speed</div>
+        <div class="chip" data-val="optimize for simplicity">Optimize for simplicity</div>
+        <div class="chip" data-val="optimize for maintainability">Optimize for maintainability</div>
+      </div>
+
+      <p style="font-size:12px;font-family:var(--mono);color:var(--muted);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.08em;">Feedback style</p>
+      <div class="chip-grid" id="feedback-chips">
+        <div class="chip" data-val="be direct">Be direct</div>
+        <div class="chip" data-val="challenge weak assumptions">Challenge weak assumptions</div>
+        <div class="chip" data-val="warn on serious issues only">Warn on serious issues only</div>
+        <div class="chip" data-val="act like a senior reviewer">Senior reviewer mode</div>
+        <div class="chip" data-val="act like a patient teacher">Patient teacher mode</div>
+        <div class="chip" data-val="act like an execution partner">Execution partner mode</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-wrap">
+    <button class="btn-generate" onclick="generateHIP()">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 8h12M8 2v12"/>
+      </svg>
+      Generate HIP.md
+    </button>
+    <button class="btn-reset" onclick="resetForm()">Reset form</button>
+  </div>
+
+  <!-- OUTPUT -->
+  <div class="output-section" id="output-section">
+    <div class="output-header">
+      <div class="output-filename">
+        <div class="output-dot"></div>
+        HIP.md
+      </div>
+      <div class="output-actions">
+        <span class="copied-flash" id="copied-flash">copied!</span>
+        <button class="btn-action" onclick="copyOutput()">Copy</button>
+        <button class="btn-action primary" onclick="downloadOutput()">Download .md</button>
+      </div>
+    </div>
+    <pre class="output-pre" id="output-pre" aria-live="polite"></pre>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <span class="footer-left">HIP.md v0.2 — Human Interface Protocol</span>
+    <div class="footer-right">
+      <a href="https://github.com/nickhilster/hip-md" class="footer-link" target="_blank" rel="noopener">GitHub</a>
+      <a href="https://teambotics.dev" class="footer-link" target="_blank" rel="noopener">Teambotics</a>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+// ── STATE ──
+const boundaryTags = [];
+let openSection = 0;
+let fluencyTouched = false;
+
+// ── SECTION TOGGLE ──
+function toggleSection(idx) {
+  const sec = document.getElementById('sec-' + idx);
+  if (sec.classList.contains('open')) {
+    sec.classList.remove('open');
+  } else {
+    document.querySelectorAll('.section.open').forEach(s => s.classList.remove('open'));
+    sec.classList.add('open');
+  }
+  openSection = idx;
+}
+
+// ── SINGLE-SELECT CHIPS ──
+function initSingleChips(groupId) {
+  document.querySelectorAll('#' + groupId + ' .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#' + groupId + ' .chip').forEach(c => c.classList.remove('selected'));
+      chip.classList.add('selected');
+      updateProgress();
+      validateSection(groupId);
+    });
+  });
+}
+
+// ── MULTI-SELECT CHIPS ──
+function initMultiChips(groupId) {
+  document.querySelectorAll('#' + groupId + ' .chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      chip.classList.toggle('selected');
+      updateProgress();
+      validateSection(groupId);
+    });
+  });
+}
+
+// ── BOUNDARY SUGGESTIONS ──
+document.querySelectorAll('[data-target="boundary"]').forEach(chip => {
+  chip.addEventListener('click', () => {
+    const val = chip.textContent.trim();
+    if (!boundaryTags.includes(val)) {
+      boundaryTags.push(val);
+      renderTags();
+      chip.classList.add('selected');
+    }
+    updateProgress();
+  });
+});
+
+// ── TAGS INPUT ──
+const tagInput = document.getElementById('boundary-input');
+tagInput.addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ',') && tagInput.value.trim()) {
+    e.preventDefault();
+    const val = tagInput.value.trim().replace(/,$/, '');
+    if (val && !boundaryTags.includes(val)) {
+      boundaryTags.push(val);
+      renderTags();
+    }
+    tagInput.value = '';
+    updateProgress();
+  }
+  if (e.key === 'Backspace' && tagInput.value === '' && boundaryTags.length) {
+    boundaryTags.pop();
+    renderTags();
+    updateProgress();
+  }
+});
+
+document.getElementById('boundary-tags-wrap').addEventListener('click', () => tagInput.focus());
+
+function renderTags() {
+  const wrap = document.getElementById('boundary-tags-wrap');
+  wrap.querySelectorAll('.tag').forEach(t => t.remove());
+  boundaryTags.forEach((tag, i) => {
+    const el = document.createElement('span');
+    el.className = 'tag';
+    el.innerHTML = tag + '<span class="tag-x" data-i="' + i + '">×</span>';
+    el.querySelector('.tag-x').addEventListener('click', () => {
+      boundaryTags.splice(i, 1);
+      renderTags();
+      updateProgress();
+    });
+    wrap.insertBefore(el, tagInput);
+  });
+  validateSection('boundary-tags-wrap');
+}
+
+// ── FLUENCY ──
+function updateFluency(el, outId) {
+  document.getElementById(outId).textContent = el.value;
+  fluencyTouched = true;
+  markSectionDone(1);
+  updateProgress();
+}
+
+// ── PROGRESS ──
+function getChipVal(groupId) {
+  const sel = document.querySelector('#' + groupId + ' .chip.selected');
+  return sel ? sel.dataset.val : null;
+}
+
+function getMultiVals(groupId) {
+  return Array.from(document.querySelectorAll('#' + groupId + ' .chip.selected')).map(c => c.dataset.val);
+}
+
+function updateProgress() {
+  const checks = [
+    !!getChipVal('role-chips'),
+    fluencyTouched, // only true after user moves a slider
+    !!getChipVal('autonomy-chips'),
+    boundaryTags.length > 0,
+    getMultiVals('done-chips').length > 0
+  ];
+
+  checks.forEach((done, i) => {
+    const pip = document.getElementById('pip-' + i);
+    pip.classList.toggle('active', !done && i === checks.findIndex((c, j) => !c && j >= i));
+    pip.classList.toggle('done', done);
+    if (done) {
+      markSectionDone(i);
+    }
+  });
+}
+
+function markSectionDone(idx) {
+  const statusEl = document.getElementById('status-' + idx);
+  if (statusEl && statusEl.textContent !== 'skippable') {
+    statusEl.textContent = '✓';
+    statusEl.classList.add('done');
+  }
+}
+
+function validateSection(groupId) {
+  // lightweight — just clear hints when satisfied
+  if (groupId === 'role-chips' && getChipVal('role-chips')) {
+    document.getElementById('v-0').classList.remove('show');
+  }
+  if (groupId === 'autonomy-chips' && getChipVal('autonomy-chips')) {
+    document.getElementById('v-2').classList.remove('show');
+  }
+  if (groupId === 'done-chips' && getMultiVals('done-chips').length > 0) {
+    document.getElementById('v-4').classList.remove('show');
+  }
+  if ((groupId === 'boundary-tags-wrap') && boundaryTags.length > 0) {
+    document.getElementById('v-3').classList.remove('show');
+  }
+}
+
+// ── FLUENCY HELPERS ──
+function getFluencyData() {
+  const keys  = ['code','git','terminal','deploy','arch','db'];
+  const names = ['code','Git','terminal','deployment','architecture','database'];
+  const vals  = keys.map(k => parseInt(document.getElementById('f-' + k).value));
+  const level = v => v <= 1 ? 'novice' : v <= 2 ? 'basic' : v <= 3 ? 'intermediate' : v <= 4 ? 'advanced' : 'fluent';
+  const avg   = vals.reduce((a, b) => a + b, 0) / vals.length;
+  const overall = avg <= 1.5 ? 'low' : avg <= 2.5 ? 'low-medium' : avg <= 3.5 ? 'medium' : avg <= 4.5 ? 'medium-high' : 'high';
+  const breakdown = names.map((n, i) => n + ': ' + level(vals[i])).join(', ');
+  return { overall, breakdown };
+}
+
+// ── GENERATE ──
+function generateHIP() {
+  // validate required fields
+  let valid = true;
+  if (!getChipVal('role-chips')) {
+    document.getElementById('v-0').classList.add('show');
+    document.getElementById('sec-0').classList.add('open');
+    valid = false;
+  }
+  if (!getChipVal('autonomy-chips')) {
+    document.getElementById('v-2').classList.add('show');
+    if (valid) { document.getElementById('sec-2').classList.add('open'); }
+    valid = false;
+  }
+  if (boundaryTags.length === 0) {
+    document.getElementById('v-3').classList.add('show');
+    if (valid) { document.getElementById('sec-3').classList.add('open'); }
+    valid = false;
+  }
+  if (getMultiVals('done-chips').length === 0) {
+    document.getElementById('v-4').classList.add('show');
+    if (valid) { document.getElementById('sec-4').classList.add('open'); }
+    valid = false;
+  }
+  if (!valid) return;
+
+  const today    = new Date().toISOString().split('T')[0];
+  const role     = getChipVal('role-chips');
+  const autonomy = getChipVal('autonomy-chips');
+  const fluency  = getFluencyData();
+  const doneList = getMultiVals('done-chips').map(v => '- ' + v).join('\n');
+  const boundaryList = boundaryTags.map(t => '- ' + t).join('\n');
+
+  // optional
+  const explain   = getChipVal('explain-chips');
+  const risk      = getChipVal('risk-chips');
+  const decision  = getChipVal('decision-chips');
+  const feedback  = getChipVal('feedback-chips');
+
+  let out = `# HIP.md — Human Interface Protocol
+<!-- v1.0 — generated ${today} -->
+
+## Human Operating Mode
+
+Role in this repo: ${role}
+Technical fluency: ${fluency.overall} overall
+  (${fluency.breakdown})
+Autonomy level: ${autonomy}`;
+
+  if (explain)  out += `\nExplanation depth: ${explain}`;
+  if (risk)     out += `\nRisk tolerance: ${risk}`;
+  if (decision) out += `\nDecision style: ${decision}`;
+  if (feedback) out += `\nFeedback style: ${feedback}`;
+
+  out += `\n\n## Approval Required Before\n\n${boundaryList}`;
+  out += `\n\n## Definition of Done\n\nWork is not done until:\n\n${doneList}`;
+  out += `\n\n## Update Rule\n\nIf the human corrects the same collaboration behavior twice,\nask whether HIP.md should be updated.`;
+
+  // render with syntax highlighting
+  renderOutput(out);
+
+  const sec = document.getElementById('output-section');
+  sec.classList.add('visible');
+  sec.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function renderOutput(text) {
+  const pre = document.getElementById('output-pre');
+  // Simple syntax coloring
+  const html = text.split('\n').map(line => {
+    if (line.startsWith('<!--')) return '<span class="out-comment">' + esc(line) + '</span>';
+    if (line.startsWith('# ')) return '<span class="out-heading">' + esc(line) + '</span>';
+    if (line.startsWith('## ')) return '<span class="out-subheading">' + esc(line) + '</span>';
+    if (line.startsWith('- ')) return '<span class="out-bullet">-</span> <span class="out-value">' + esc(line.slice(2)) + '</span>';
+    return '<span class="out-value">' + esc(line) + '</span>';
+  }).join('\n');
+  pre.innerHTML = html;
+  // store raw for copy/download
+  pre.dataset.raw = text;
+}
+
+function esc(s) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── COPY ──
+function copyOutput() {
+  const text = document.getElementById('output-pre').dataset.raw;
+  navigator.clipboard.writeText(text).then(() => {
+    const flash = document.getElementById('copied-flash');
+    flash.style.display = 'inline';
+    setTimeout(() => flash.style.display = 'none', 2000);
+  }).catch(() => {
+    // fallback
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+  });
+}
+
+// ── DOWNLOAD ──
+function downloadOutput() {
+  const text = document.getElementById('output-pre').dataset.raw;
+  const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'HIP.md';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(a.href);
+}
+
+// ── RESET ──
+function resetForm() {
+  fluencyTouched = false;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  boundaryTags.length = 0;
+  renderTags();
+  ['code','git','terminal','deploy','arch','db'].forEach(k => {
+    document.getElementById('f-' + k).value = 3;
+    document.getElementById('fv-' + k).textContent = '3';
+  });
+  document.querySelectorAll('.validation-hint').forEach(v => v.classList.remove('show'));
+  document.querySelectorAll('.section-status').forEach((s, i) => {
+    s.textContent = i === 5 ? 'skippable' : 'required';
+    s.classList.remove('done');
+  });
+  document.querySelectorAll('.progress-pip').forEach((p, i) => {
+    p.classList.toggle('active', i === 0);
+    p.classList.remove('done');
+  });
+  document.getElementById('output-section').classList.remove('visible');
+  document.querySelectorAll('.section').forEach((s, i) => {
+    s.classList.toggle('open', i === 0);
+  });
+}
+
+// ── INIT ──
+initSingleChips('role-chips');
+initSingleChips('autonomy-chips');
+initSingleChips('explain-chips');
+initSingleChips('risk-chips');
+initSingleChips('decision-chips');
+initSingleChips('feedback-chips');
+initMultiChips('done-chips');
+updateProgress();
+</script>
+</body>
+</html>

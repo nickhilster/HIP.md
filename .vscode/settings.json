@@ -1,0 +1,10 @@
+{
+    "workbench.colorTheme": "HighCoCo Carbon: Gold",
+    "workbench.colorCustomizations": {
+        "statusBar.background": "#000000",
+        "statusBar.foreground": "#FFD700",
+        "statusBar.border": "#FFD70044",
+        "statusBarItem.hoverBackground": "#FFD70033",
+        "statusBarItem.activeBackground": "#FFD70055"
+    }
+}
