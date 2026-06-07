@@ -1,5 +1,11 @@
 # nickhilster/spec
 
+**How to use**
+
+This product runs best inside the repository where it is dropped. Open `final/index.html` or deploy the `final/` static site from this repo, answer the calibration prompts, and download a ready-to-commit `HIP.md` file.
+
+Once downloaded, keep `HIP.md` at the repo root alongside `AGENTS.md`, `CLAUDE.md`, or your other agent guidance docs. The page includes a built-in "How to use" popup for repeat onboarding and repo-local usage guidance.
+
 HIP.md is a small repo-local Markdown contract that tells an AI agent how to work with the human directing the repository. It captures collaboration settings such as autonomy, explanation depth, approval gates, and definition of done in a format agents can parse at repo root.
 
 ## 30-Second Install

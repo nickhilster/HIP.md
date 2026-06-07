@@ -4,6 +4,8 @@ A standalone web form for generating `HIP.md` — the Human Interface Protocol c
 
 No server. No database. No build step. Pure HTML/CSS/JS.
 
+This page is meant for use from the repository where `HIP.md` should live. Generate the file in the repo root, download it, and commit it alongside your AI guidance files for best repo-local results.
+
 ## Deploy to Vercel (recommended)
 
 ```bash
