@@ -29,6 +29,7 @@
         --muted: #7a7870;
         --accent: #c8f564;
         --accent2: #a8d44a;
+        --accent-rgb: 200, 245, 100;
         --blue: #4a9eff;
         --mono: "DM Mono", monospace;
         --sans: "DM Sans", sans-serif;
@@ -48,7 +49,7 @@
         background-image:
           radial-gradient(
             ellipse 60% 40% at 80% 10%,
-            rgba(200, 245, 100, 0.04) 0%,
+            rgba(var(--accent-rgb), 0.04) 0%,
             transparent 60%
           ),
           radial-gradient(
@@ -122,6 +123,25 @@
         color: var(--accent);
       }
 
+      #theme-you {
+        cursor: pointer;
+        -webkit-user-select: none;
+        user-select: none;
+        display: inline-block;
+        animation: youGlow 3.5s ease-in-out infinite;
+        transition: color 0.55s ease, text-shadow 0.55s ease;
+      }
+
+      @keyframes youGlow {
+        0%   { text-shadow: 0 0 8px var(--accent), 0 0 18px var(--accent); opacity: 1; }
+        42%  { text-shadow: 0 0 18px var(--accent), 0 0 40px var(--accent), 0 0 70px var(--accent); opacity: 1; }
+        44%  { text-shadow: 0 0 3px var(--accent); opacity: 0.6; }
+        46%  { text-shadow: 0 0 18px var(--accent), 0 0 40px var(--accent), 0 0 70px var(--accent); opacity: 1; }
+        48%  { text-shadow: 0 0 5px var(--accent); opacity: 0.72; }
+        50%  { text-shadow: 0 0 18px var(--accent), 0 0 40px var(--accent); opacity: 1; }
+        100% { text-shadow: 0 0 8px var(--accent), 0 0 18px var(--accent); opacity: 1; }
+      }
+
       .subtitle {
         font-size: 15px;
         color: var(--muted);
@@ -148,7 +168,7 @@
         background: var(--accent);
       }
       .progress-pip.done {
-        background: rgba(200, 245, 100, 0.4);
+        background: rgba(var(--accent-rgb), 0.4);
       }
 
       /* ── SECTIONS ── */
@@ -263,8 +283,8 @@
       }
 
       .chip.selected {
-        background: rgba(200, 245, 100, 0.1);
-        border-color: rgba(200, 245, 100, 0.4);
+        background: rgba(var(--accent-rgb), 0.1);
+        border-color: rgba(var(--accent-rgb), 0.4);
         color: var(--accent);
       }
 
@@ -309,7 +329,7 @@
         height: 14px;
         border-radius: 50%;
         background: var(--accent);
-        box-shadow: 0 0 8px rgba(200, 245, 100, 0.4);
+        box-shadow: 0 0 8px rgba(var(--accent-rgb), 0.4);
         transition: transform 0.1s;
       }
 
@@ -364,15 +384,15 @@
       }
 
       .tags-wrap:focus-within {
-        border-color: rgba(200, 245, 100, 0.35);
+        border-color: rgba(var(--accent-rgb), 0.35);
       }
 
       .tag {
         display: inline-flex;
         align-items: center;
         gap: 5px;
-        background: rgba(200, 245, 100, 0.1);
-        border: 1px solid rgba(200, 245, 100, 0.25);
+        background: rgba(var(--accent-rgb), 0.1);
+        border: 1px solid rgba(var(--accent-rgb), 0.25);
         color: var(--accent);
         border-radius: 12px;
         padding: 2px 8px 2px 10px;
@@ -441,8 +461,8 @@
         gap: 8px;
         padding: 12px 24px;
         border-radius: 8px;
-        border: 1px solid rgba(200, 245, 100, 0.5);
-        background: rgba(200, 245, 100, 0.08);
+        border: 1px solid rgba(var(--accent-rgb), 0.5);
+        background: rgba(var(--accent-rgb), 0.08);
         color: var(--accent);
         font-family: var(--sans);
         font-size: 14px;
@@ -453,9 +473,9 @@
       }
 
       .btn-generate:hover {
-        background: rgba(200, 245, 100, 0.15);
-        border-color: rgba(200, 245, 100, 0.7);
-        box-shadow: 0 0 20px rgba(200, 245, 100, 0.1);
+        background: rgba(var(--accent-rgb), 0.15);
+        border-color: rgba(var(--accent-rgb), 0.7);
+        box-shadow: 0 0 20px rgba(var(--accent-rgb), 0.1);
       }
 
       .btn-generate:active {
@@ -479,7 +499,7 @@
       /* ── OUTPUT ── */
       .output-section {
         margin-top: 48px;
-        border: 1px solid rgba(200, 245, 100, 0.2);
+        border: 1px solid rgba(var(--accent-rgb), 0.2);
         border-radius: 12px;
         overflow: hidden;
         display: none;
@@ -506,8 +526,8 @@
         align-items: center;
         justify-content: space-between;
         padding: 14px 20px;
-        background: rgba(200, 245, 100, 0.05);
-        border-bottom: 1px solid rgba(200, 245, 100, 0.15);
+        background: rgba(var(--accent-rgb), 0.05);
+        border-bottom: 1px solid rgba(var(--accent-rgb), 0.15);
       }
 
       .output-filename {
@@ -550,13 +570,13 @@
       }
 
       .btn-action.primary {
-        border-color: rgba(200, 245, 100, 0.4);
+        border-color: rgba(var(--accent-rgb), 0.4);
         color: var(--accent);
       }
 
       .btn-action.primary:hover {
-        background: rgba(200, 245, 100, 0.1);
-        border-color: rgba(200, 245, 100, 0.6);
+        background: rgba(var(--accent-rgb), 0.1);
+        border-color: rgba(var(--accent-rgb), 0.6);
       }
 
       .copied-flash {
@@ -732,7 +752,7 @@
           <div class="wordmark-dot"></div>
           <span class="wordmark-text">HIP.md — Human Interface Protocol</span>
         </div>
-        <h1>Calibrate how your<br />agent works with <em>you</em></h1>
+        <h1>Calibrate how your<br />agent works with <em id="theme-you" onclick="cycleTheme()">you</em></h1>
         <p class="subtitle">
           Answer five questions. Get a ready-to-commit
           <code
@@ -1760,6 +1780,29 @@ Autonomy level: ${autonomy}`;
         document.querySelectorAll(".section").forEach((s, i) => {
           s.classList.toggle("open", i === 0);
         });
+      }
+
+      // ── THEME EASTER EGG ──
+      const THEMES = [
+        { name: 'green',  accent: '#c8f564', accent2: '#a8d44a', rgb: '200, 245, 100' },
+        { name: 'blue',   accent: '#4a9eff', accent2: '#2d7fd9', rgb: '74, 158, 255'  },
+        { name: 'red',    accent: '#ff5f5f', accent2: '#e04444', rgb: '255, 95, 95'   },
+        { name: 'yellow', accent: '#ffd94a', accent2: '#e6c030', rgb: '255, 217, 74'  },
+        { name: 'orange', accent: '#ff8c42', accent2: '#e0722f', rgb: '255, 140, 66'  },
+      ];
+      let themeIdx = 0;
+
+      function cycleTheme() {
+        themeIdx = (themeIdx + 1) % THEMES.length;
+        const t = THEMES[themeIdx];
+        const root = document.documentElement;
+        root.style.setProperty('--accent', t.accent);
+        root.style.setProperty('--accent2', t.accent2);
+        root.style.setProperty('--accent-rgb', t.rgb);
+
+        const el = document.getElementById('theme-you');
+        el.style.transform = 'scale(1.18)';
+        setTimeout(() => { el.style.transform = ''; }, 220);
       }
 
       // ── INIT ──
