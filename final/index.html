@@ -727,6 +727,27 @@
 
       .help-banner {
         margin-bottom: 28px;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      /* ── TEMPLATE DOWNLOAD ── */
+      .modal-download {
+        margin-top: 8px;
+      }
+
+      .btn-download-tpl {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        font-size: 13px;
+      }
+
+      .hero-download {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
       }
 
       /* ── OPTIONAL BADGE ── */
@@ -775,6 +796,14 @@
         >
           How to use
         </button>
+        <button
+          class="btn-action primary hero-download"
+          onclick="downloadTemplate()"
+          type="button"
+        >
+          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v9M4 8l4 4 4-4"/><path d="M2 14h12"/></svg>
+          Download blank HIP.md
+        </button>
       </div>
 
       <div class="modal-overlay" id="howto-modal" aria-hidden="true">
@@ -815,6 +844,12 @@
             Running the page from the same repository where HIP.md belongs gives
             the best results.
           </p>
+          <div class="modal-download">
+            <button class="btn-action primary btn-download-tpl" onclick="downloadTemplate()" type="button">
+              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v9M4 8l4 4 4-4"/><path d="M2 14h12"/></svg>
+              Download blank HIP.md
+            </button>
+          </div>
         </div>
       </div>
 
@@ -1780,6 +1815,49 @@ Autonomy level: ${autonomy}`;
         document.querySelectorAll(".section").forEach((s, i) => {
           s.classList.toggle("open", i === 0);
         });
+      }
+
+      // ── TEMPLATE DOWNLOAD ──
+      function downloadTemplate() {
+        const today = new Date().toISOString().split('T')[0];
+        const text = `# HIP.md — Human Interface Protocol
+<!-- v1.0 — template — fill in your preferences, then commit to repo root -->
+
+## Human Operating Mode
+
+Role in this repo: [main developer | technical founder | non-technical founder | designer-builder | product manager | student / learner | maintainer | researcher | domain expert | operator directing implementation]
+Technical fluency: medium overall
+  (code: intermediate, Git: intermediate, terminal: intermediate, deployment: intermediate, architecture: intermediate, database: intermediate)
+Autonomy level: [ask before every meaningful change | make small safe edits only | pause before structural decisions | act autonomously, summarize afterward | operate like a pair programmer | operate like a delegated implementation partner]
+
+## Approval Required Before
+
+- auth
+- database schema
+- deployment config
+- [add your own boundaries]
+
+## Definition of Done
+
+Work is not done until:
+
+- code compiles and tests pass
+- feature works locally
+- [add your own criteria]
+
+## Update Rule
+
+If the human corrects the same collaboration behavior twice,
+ask whether HIP.md should be updated.
+`;
+        const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(blob);
+        a.download = 'HIP.md';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(a.href);
       }
 
       // ── THEME EASTER EGG ──
