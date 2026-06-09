@@ -17,17 +17,17 @@ If the human declines or cancels, exit without writing.
 
 ### Prompt Sequence
 
-| Step | Prompt | Input type | Writes to |
-|------|--------|------------|-----------|
-| 1 | `What is your relationship to this repo?` | Select | `Role in this repo` |
-| 2 | `How would you describe your overall technical fluency here?` | Select | `Technical fluency` |
-| 3 | `What are you primarily trying to do here?` | Select | `Primary intent` |
-| 4 | `How much autonomy should the agent take?` | Select | `Autonomy level` |
-| 5 | `How much explanation do you want?` | Select | `Explanation depth` |
-| 6 | `What risk mode is this project in?` | Select | `Risk tolerance` |
-| 7 | `What should the agent avoid touching without your explicit approval? (select all that apply)` | Multi-select | `Approval Required Before` |
-| 8 | `What does "done" mean to you? (select all that apply)` | Multi-select | `Definition of Done` |
-| 9 | `Write HIP.md with these settings?` | Confirm | Write or restart |
+| Step | Prompt                                                                                         | Input type   | Writes to                  |
+| ---- | ---------------------------------------------------------------------------------------------- | ------------ | -------------------------- |
+| 1    | `What is your relationship to this repo?`                                                      | Select       | `Role in this repo`        |
+| 2    | `How would you describe your overall technical fluency here?`                                  | Select       | `Technical fluency`        |
+| 3    | `What are you primarily trying to do here?`                                                    | Select       | `Primary intent`           |
+| 4    | `How much autonomy should the agent take?`                                                     | Select       | `Autonomy level`           |
+| 5    | `How much explanation do you want?`                                                            | Select       | `Explanation depth`        |
+| 6    | `What risk mode is this project in?`                                                           | Select       | `Risk tolerance`           |
+| 7    | `What should the agent avoid touching without your explicit approval? (select all that apply)` | Multi-select | `Approval Required Before` |
+| 8    | `What does "done" mean to you? (select all that apply)`                                        | Multi-select | `Definition of Done`       |
+| 9    | `Write HIP.md with these settings?`                                                            | Confirm      | Write or restart           |
 
 ### Review Step
 
@@ -99,7 +99,7 @@ When the human drops a bootstrap `HIP.md` into a repo root with no other context
 
 1. Inspect the repo before designing the intake. Look for app framework, package manager, scripts, existing docs, agent instruction files, UI components, design tokens, CSS variables, typography, color, spacing, and screenshots or public pages when available.
 2. Create the smallest practical local HTML experience needed to collect the canonical fields.
-3. Run it on localhost and give the human the URL.
+3. Run it on localhost and give the human the URL. For the CLI path, the agent may launch `npx create-hip --serve` or `npx create-hip --bootstrap --serve` from the repo root.
 4. If UI signals exist, follow them. If not, use a clean accessible default with clear hierarchy and responsive behavior.
 5. Submit answers to a local endpoint or local file-writing mechanism controlled by the agent process.
 6. Show visual confirmation in the HTML only after the answers were actually recorded.

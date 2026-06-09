@@ -47,10 +47,18 @@ npx create-hip --validate              # validate an existing HIP.md
 ### Bootstrap drop-in (agent-led)
 
 ```bash
-npx create-hip --bootstrap
+npx create-hip --bootstrap --serve
 ```
 
-Writes a `HIP.md` bootstrap file at the repo root. When an AI agent finds it, it will run a localhost intake, inspect the repo, and replace the bootstrap file with a finalized repo-specific `HIP.md`.
+Creates a `HIP.md` bootstrap file at the repo root and starts a local intake server. Open the browser to complete the agent-led form and save the final `HIP.md`.
+
+If the bootstrap file already exists, run:
+
+```bash
+npx create-hip --serve
+```
+
+This command is designed for agents and humans who want the repo-local intake form to launch automatically from the repository.
 
 ### Web form
 

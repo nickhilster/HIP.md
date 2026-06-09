@@ -1,0 +1,336 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>HIP.md Intake</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #101114;
+        --panel: #191b20;
+        --border: #323640;
+        --text: #f2f0e8;
+        --muted: #a4a098;
+        --accent: #c8f564;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--text);
+        font: 15px/1.5 system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      }
+
+      main {
+        width: min(760px, calc(100% - 32px));
+        margin: 48px auto;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: clamp(28px, 5vw, 44px);
+        line-height: 1.1;
+        font-weight: 650;
+      }
+
+      p {
+        margin: 0 0 24px;
+        color: var(--muted);
+      }
+
+      form {
+        display: grid;
+        gap: 16px;
+      }
+
+      label {
+        display: grid;
+        gap: 8px;
+        padding: 16px;
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+      }
+
+      span {
+        font-weight: 650;
+      }
+
+      select,
+      textarea,
+      button {
+        width: 100%;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+        background: #0f1013;
+        color: var(--text);
+        font: inherit;
+      }
+
+      select,
+      textarea {
+        padding: 10px 12px;
+      }
+
+      textarea {
+        min-height: 86px;
+        resize: vertical;
+      }
+
+      button {
+        padding: 13px 16px;
+        border-color: rgba(200, 245, 100, 0.55);
+        background: rgba(200, 245, 100, 0.12);
+        color: var(--accent);
+        cursor: pointer;
+        font-weight: 650;
+      }
+
+      button:disabled {
+        cursor: wait;
+        opacity: 0.7;
+      }
+
+      #status {
+        display: none;
+        margin-top: 18px;
+        padding: 14px 16px;
+        border-radius: 8px;
+        border: 1px solid rgba(200, 245, 100, 0.35);
+        background: rgba(200, 245, 100, 0.08);
+      }
+
+      #status.visible {
+        display: block;
+      }
+
+      code {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Calibrate HIP.md</h1>
+      <p>
+        Complete the repo-local intake. Submitting writes the finalized
+        <code>HIP.md</code> back to this repository.
+      </p>
+
+      <form id="hip-form">
+        <label>
+          <span>Role in this repo</span>
+          <select name="role" required>
+            <option>Main developer</option>
+            <option>Technical founder</option>
+            <option>Non-technical founder</option>
+            <option>Designer-builder</option>
+            <option>Product manager</option>
+            <option>Student / learner</option>
+            <option>Maintainer</option>
+            <option>Researcher</option>
+            <option>Domain expert</option>
+            <option>Operator directing implementation</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Technical fluency</span>
+          <select name="fluency" required>
+            <option>High overall; comfortable with code, Git, terminal, debugging, and deployment</option>
+            <option>Medium overall; strong in some areas (code, architecture), lighter in others (deployment, ops)</option>
+            <option>Lower technical depth; strong domain, product, or design knowledge</option>
+            <option>Variable; deep in my domain, actively learning the stack</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Primary intent</span>
+          <select name="intent" required>
+            <option>Ship a feature</option>
+            <option>Debug a problem</option>
+            <option>Learn the stack</option>
+            <option>Prototype quickly</option>
+            <option>Refactor safely</option>
+            <option>Document the system</option>
+            <option>Prepare a demo</option>
+            <option>Maintain production code</option>
+            <option>Explore an idea</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Autonomy level</span>
+          <select name="autonomy" required>
+            <option>Ask before every meaningful change</option>
+            <option>Small safe edits only</option>
+            <option selected>Make changes, pause before structural decisions</option>
+            <option>Act autonomously, summarize afterward</option>
+            <option>Pair programmer</option>
+            <option>Delegated implementation partner</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Explanation depth</span>
+          <select name="explanation" required>
+            <option>Step by step</option>
+            <option selected>Brief summaries</option>
+            <option>Tradeoffs and risks only</option>
+            <option>Risks only</option>
+            <option>Only when asked</option>
+            <option>Teach as we go</option>
+            <option>Result first, reasoning on request</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Risk tolerance</span>
+          <select name="risk" required>
+            <option>Conservative</option>
+            <option selected>Balanced</option>
+            <option>Prototype</option>
+            <option>Experimental</option>
+            <option>Production-safe</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Approval required before</span>
+          <textarea name="boundaries">authentication
+database schema
+deployment configuration</textarea>
+        </label>
+
+        <label>
+          <span>Definition of done</span>
+          <textarea name="done" required>the change is usable or clearly ready for testing
+tests pass
+risks are stated
+files changed are summarized
+next steps are clear</textarea>
+        </label>
+
+        <label>
+          <span>Decision style</span>
+          <select name="decision">
+            <option selected>One clear recommendation</option>
+            <option>Tradeoffs then recommendation</option>
+            <option>Options, human decides</option>
+            <option>Optimize for speed</option>
+            <option>Optimize for maintainability</option>
+            <option>Optimize for simplicity</option>
+            <option>Optimize for learning</option>
+          </select>
+        </label>
+
+        <label>
+          <span>Feedback style</span>
+          <select name="feedback">
+            <option selected>Direct</option>
+            <option>Gentle</option>
+            <option>Challenge weak assumptions</option>
+            <option>Warn on serious issues only</option>
+            <option>Senior reviewer</option>
+            <option>Patient teacher</option>
+            <option>Execution partner</option>
+          </select>
+        </label>
+
+        <button type="submit">Save HIP.md</button>
+      </form>
+
+      <div id="status" role="status" aria-live="polite"></div>
+    </main>
+
+    <script>
+      const form = document.getElementById("hip-form");
+      const status = document.getElementById("status");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const button = form.querySelector("button");
+        button.disabled = true;
+        status.classList.remove("visible");
+
+        try {
+          const data = new FormData(form);
+          const markdown = renderHip(data);
+          const response = await fetch("/api/hip", {
+            method: "POST",
+            headers: { "Content-Type": "application/json;charset=utf-8" },
+            body: JSON.stringify({ content: markdown }),
+          });
+
+          if (!response.ok) {
+            throw new Error(await response.text());
+          }
+
+          const result = await response.json();
+          status.innerHTML = `<strong>Feedback recorded.</strong> HIP.md was saved to <code>${escapeHtml(result.path)}</code>.`;
+          status.classList.add("visible");
+        } catch (error) {
+          status.textContent = `Save failed: ${error.message}`;
+          status.classList.add("visible");
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+      function renderHip(data) {
+        const today = new Date().toISOString().slice(0, 10);
+        const boundaries = list(data.get("boundaries"));
+        const done = list(data.get("done"));
+
+        return `<!-- hip-version: 1.0 -->
+# HIP.md — Human Interface Protocol
+<!-- generated ${today} from repo-local intake -->
+
+## Human Operating Mode
+
+Role in this repo: ${data.get("role")}
+Technical fluency: ${data.get("fluency")}
+Primary intent: ${data.get("intent")}
+Autonomy level: ${data.get("autonomy")}
+Explanation depth: ${data.get("explanation")}
+Risk tolerance: ${data.get("risk")}
+Decision style: ${data.get("decision")}
+Feedback style: ${data.get("feedback")}
+
+## Approval Required Before
+
+${boundaries.length ? boundaries.map((item) => `- ${item}`).join("\n") : "(none specified)"}
+
+## Definition of Done
+
+Work is not done until:
+
+${done.map((item) => `- ${item}`).join("\n")}
+
+## Update Rule
+
+If the human corrects the same collaboration behavior twice, ask whether HIP.md should be updated.
+`;
+      }
+
+      function list(value) {
+        return String(value || "")
+          .split(/\r?\n|,/)
+          .map((item) => item.trim())
+          .filter(Boolean);
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;");
+      }
+    </script>
+  </body>
+</html>

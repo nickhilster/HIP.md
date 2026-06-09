@@ -129,17 +129,52 @@
         user-select: none;
         display: inline-block;
         animation: youGlow 3.5s ease-in-out infinite;
-        transition: color 0.55s ease, text-shadow 0.55s ease;
+        transition:
+          color 0.55s ease,
+          text-shadow 0.55s ease;
       }
 
       @keyframes youGlow {
-        0%   { text-shadow: 0 0 8px var(--accent), 0 0 18px var(--accent); opacity: 1; }
-        42%  { text-shadow: 0 0 18px var(--accent), 0 0 40px var(--accent), 0 0 70px var(--accent); opacity: 1; }
-        44%  { text-shadow: 0 0 3px var(--accent); opacity: 0.6; }
-        46%  { text-shadow: 0 0 18px var(--accent), 0 0 40px var(--accent), 0 0 70px var(--accent); opacity: 1; }
-        48%  { text-shadow: 0 0 5px var(--accent); opacity: 0.72; }
-        50%  { text-shadow: 0 0 18px var(--accent), 0 0 40px var(--accent); opacity: 1; }
-        100% { text-shadow: 0 0 8px var(--accent), 0 0 18px var(--accent); opacity: 1; }
+        0% {
+          text-shadow:
+            0 0 8px var(--accent),
+            0 0 18px var(--accent);
+          opacity: 1;
+        }
+        42% {
+          text-shadow:
+            0 0 18px var(--accent),
+            0 0 40px var(--accent),
+            0 0 70px var(--accent);
+          opacity: 1;
+        }
+        44% {
+          text-shadow: 0 0 3px var(--accent);
+          opacity: 0.6;
+        }
+        46% {
+          text-shadow:
+            0 0 18px var(--accent),
+            0 0 40px var(--accent),
+            0 0 70px var(--accent);
+          opacity: 1;
+        }
+        48% {
+          text-shadow: 0 0 5px var(--accent);
+          opacity: 0.72;
+        }
+        50% {
+          text-shadow:
+            0 0 18px var(--accent),
+            0 0 40px var(--accent);
+          opacity: 1;
+        }
+        100% {
+          text-shadow:
+            0 0 8px var(--accent),
+            0 0 18px var(--accent);
+          opacity: 1;
+        }
       }
 
       .subtitle {
@@ -786,7 +821,10 @@
           <div class="wordmark-dot"></div>
           <span class="wordmark-text">HIP.md — Human Interface Protocol</span>
         </div>
-        <h1>Calibrate how your<br />agent works with <em id="theme-you" onclick="cycleTheme()">you</em></h1>
+        <h1>
+          Calibrate how your<br />agent works with
+          <em id="theme-you" onclick="cycleTheme()">you</em>
+        </h1>
         <p class="subtitle">
           Answer the calibration questions. Get a ready-to-commit
           <code
@@ -814,7 +852,19 @@
           onclick="downloadTemplate()"
           type="button"
         >
-          <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v9M4 8l4 4 4-4"/><path d="M2 14h12"/></svg>
+          <svg
+            width="13"
+            height="13"
+            viewBox="0 0 16 16"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="1.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M8 2v9M4 8l4 4 4-4" />
+            <path d="M2 14h12" />
+          </svg>
           Download bootstrap HIP.md
         </button>
       </div>
@@ -846,10 +896,10 @@
               generated <code>HIP.md</code>.
             </li>
             <li>
-              Agent-led path: drop the bootstrap <code>HIP.md</code> into a
-              repo root. The agent should create a localhost intake, follow
-              existing UI signals, record your choices, inspect the repo, and
-              replace the bootstrap with the final file.
+              Agent-led path: drop the bootstrap <code>HIP.md</code> into a repo
+              root. The agent should create a localhost intake, follow existing
+              UI signals, record your choices, inspect the repo, and replace the
+              bootstrap with the final file.
             </li>
             <li>
               Keep the finalized file alongside <code>AGENTS.md</code>,
@@ -862,8 +912,24 @@
             can reflect both your choices and the project context.
           </p>
           <div class="modal-download">
-            <button class="btn-action primary btn-download-tpl" onclick="downloadTemplate()" type="button">
-              <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v9M4 8l4 4 4-4"/><path d="M2 14h12"/></svg>
+            <button
+              class="btn-action primary btn-download-tpl"
+              onclick="downloadTemplate()"
+              type="button"
+            >
+              <svg
+                width="13"
+                height="13"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M8 2v9M4 8l4 4 4-4" />
+                <path d="M2 14h12" />
+              </svg>
               Download bootstrap HIP.md
             </button>
           </div>
@@ -1065,7 +1131,10 @@
             <div class="chip" data-val="Small safe edits only">
               Small safe edits only
             </div>
-            <div class="chip" data-val="Make changes, pause before structural decisions">
+            <div
+              class="chip"
+              data-val="Make changes, pause before structural decisions"
+            >
               Pause before structural decisions
             </div>
             <div class="chip" data-val="Act autonomously, summarize afterward">
@@ -1236,11 +1305,17 @@
             <div class="chip" data-val="Ship a feature">Ship a feature</div>
             <div class="chip" data-val="Debug a problem">Debug a problem</div>
             <div class="chip" data-val="Learn the stack">Learn the stack</div>
-            <div class="chip" data-val="Prototype quickly">Prototype quickly</div>
+            <div class="chip" data-val="Prototype quickly">
+              Prototype quickly
+            </div>
             <div class="chip" data-val="Refactor safely">Refactor safely</div>
-            <div class="chip" data-val="Document the system">Document the system</div>
+            <div class="chip" data-val="Document the system">
+              Document the system
+            </div>
             <div class="chip" data-val="Prepare a demo">Prepare a demo</div>
-            <div class="chip" data-val="Maintain production code">Maintain production</div>
+            <div class="chip" data-val="Maintain production code">
+              Maintain production
+            </div>
             <div class="chip" data-val="Explore an idea">Explore an idea</div>
           </div>
 
@@ -1263,12 +1338,8 @@
               Tradeoffs only
             </div>
             <div class="chip" data-val="Risks only">Risks only</div>
-            <div class="chip" data-val="Only when asked">
-              Only when asked
-            </div>
-            <div class="chip" data-val="Teach as we go">
-              Teach me as we go
-            </div>
+            <div class="chip" data-val="Only when asked">Only when asked</div>
+            <div class="chip" data-val="Teach as we go">Teach me as we go</div>
             <div class="chip" data-val="Result first, reasoning on request">
               Result first, reasoning after
             </div>
@@ -1287,21 +1358,11 @@
             Risk tolerance
           </p>
           <div class="chip-grid" id="risk-chips" style="margin-bottom: 20px">
-            <div class="chip" data-val="Conservative">
-              Conservative
-            </div>
-            <div class="chip" data-val="Balanced">
-              Balanced
-            </div>
-            <div class="chip" data-val="Prototype">
-              Prototype mode
-            </div>
-            <div class="chip" data-val="Experimental">
-              Experimental
-            </div>
-            <div class="chip" data-val="Production-safe">
-              Production-safe
-            </div>
+            <div class="chip" data-val="Conservative">Conservative</div>
+            <div class="chip" data-val="Balanced">Balanced</div>
+            <div class="chip" data-val="Prototype">Prototype mode</div>
+            <div class="chip" data-val="Experimental">Experimental</div>
+            <div class="chip" data-val="Production-safe">Production-safe</div>
           </div>
 
           <p
@@ -1404,6 +1465,14 @@
           <div class="output-actions">
             <span class="copied-flash" id="copied-flash">copied!</span>
             <button class="btn-action" onclick="copyOutput()">Copy</button>
+            <button
+              id="save-repo-button"
+              class="btn-action primary"
+              onclick="saveOutput()"
+              style="display: none"
+            >
+              Save to repo
+            </button>
             <button class="btn-action primary" onclick="downloadOutput()">
               Download .md
             </button>
@@ -1450,6 +1519,7 @@
       const boundaryTags = [];
       let openSection = 0;
       let fluencyTouched = false;
+      let agentMode = false;
 
       // ── SECTION TOGGLE ──
       function toggleSection(idx) {
@@ -1618,15 +1688,25 @@
       // ── FLUENCY HELPERS ──
       function getFluencyData() {
         const keys = ["code", "git", "terminal", "deploy", "arch", "db"];
-        const domains = ["Code", "Git", "Terminal", "Deployment", "Architecture", "Database"];
+        const domains = [
+          "Code",
+          "Git",
+          "Terminal",
+          "Deployment",
+          "Architecture",
+          "Database",
+        ];
         const vals = keys.map((k) =>
           parseInt(document.getElementById("f-" + k).value),
         );
-        const level = (v) => v >= 4 ? "High" : v >= 3 ? "Medium" : "Low";
+        const level = (v) => (v >= 4 ? "High" : v >= 3 ? "Medium" : "Low");
         const avg = vals.reduce((a, b) => a + b, 0) / vals.length;
         const overall =
           avg >= 4 ? "High" : avg >= 3 ? "Medium" : avg >= 2 ? "Low" : "Low";
-        const rows = domains.map((d, i) => ({ domain: d, level: level(vals[i]) }));
+        const rows = domains.map((d, i) => ({
+          domain: d,
+          level: level(vals[i]),
+        }));
         return { overall, rows };
       }
 
@@ -1702,10 +1782,18 @@ Technical fluency: ${fluency.overall} overall`;
 
         // render with syntax highlighting
         renderOutput(out);
+        updateRepoAction();
 
         const sec = document.getElementById("output-section");
         sec.classList.add("visible");
         sec.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      }
+
+      function updateRepoAction() {
+        const saveButton = document.getElementById("save-repo-button");
+        if (saveButton) {
+          saveButton.style.display = agentMode ? "inline-flex" : "none";
+        }
       }
 
       function renderOutput(text) {
@@ -1802,6 +1890,48 @@ Technical fluency: ${fluency.overall} overall`;
         URL.revokeObjectURL(a.href);
       }
 
+      async function saveOutput() {
+        const text = document.getElementById("output-pre").dataset.raw;
+        const confirmation = document.getElementById("output-confirmation");
+        if (!agentMode) {
+          confirmation.innerHTML =
+            "<strong>Connected mode unavailable.</strong> Open this page through the local intake server to save directly to the repo.";
+          return;
+        }
+
+        try {
+          const response = await fetch("/api/hip", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json;charset=utf-8",
+            },
+            body: JSON.stringify({ content: text }),
+          });
+
+          if (!response.ok) {
+            const errorBody = await response.text();
+            throw new Error(errorBody || response.statusText);
+          }
+
+          const result = await response.json();
+          confirmation.innerHTML = `<strong>HIP.md saved to repo.</strong> Review it at <code>${result.path}</code>`;
+        } catch (error) {
+          confirmation.innerHTML = `<strong>Save failed.</strong> ${error.message}`;
+        }
+      }
+
+      async function detectAgentMode() {
+        try {
+          const response = await fetch("/api/ping");
+          if (response.ok) {
+            agentMode = true;
+          }
+        } catch (error) {
+          agentMode = false;
+        }
+        updateRepoAction();
+      }
+
       // ── RESET ──
       function resetForm() {
         fluencyTouched = false;
@@ -1867,10 +1997,10 @@ When an agent finds this file at repo root and no finalized HIP.md exists, it mu
 
 The final \`HIP.md\` must be a repo-specific collaboration contract, not a generic template. It should reflect both the human choices and concrete repository context discovered during inspection.
 `;
-        const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
-        const a = document.createElement('a');
+        const blob = new Blob([text], { type: "text/markdown;charset=utf-8" });
+        const a = document.createElement("a");
         a.href = URL.createObjectURL(blob);
-        a.download = 'HIP.md';
+        a.download = "HIP.md";
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -1879,11 +2009,36 @@ The final \`HIP.md\` must be a repo-specific collaboration contract, not a gener
 
       // ── THEME EASTER EGG ──
       const THEMES = [
-        { name: 'green',  accent: '#c8f564', accent2: '#a8d44a', rgb: '200, 245, 100' },
-        { name: 'blue',   accent: '#4a9eff', accent2: '#2d7fd9', rgb: '74, 158, 255'  },
-        { name: 'red',    accent: '#ff5f5f', accent2: '#e04444', rgb: '255, 95, 95'   },
-        { name: 'yellow', accent: '#ffd94a', accent2: '#e6c030', rgb: '255, 217, 74'  },
-        { name: 'orange', accent: '#ff8c42', accent2: '#e0722f', rgb: '255, 140, 66'  },
+        {
+          name: "green",
+          accent: "#c8f564",
+          accent2: "#a8d44a",
+          rgb: "200, 245, 100",
+        },
+        {
+          name: "blue",
+          accent: "#4a9eff",
+          accent2: "#2d7fd9",
+          rgb: "74, 158, 255",
+        },
+        {
+          name: "red",
+          accent: "#ff5f5f",
+          accent2: "#e04444",
+          rgb: "255, 95, 95",
+        },
+        {
+          name: "yellow",
+          accent: "#ffd94a",
+          accent2: "#e6c030",
+          rgb: "255, 217, 74",
+        },
+        {
+          name: "orange",
+          accent: "#ff8c42",
+          accent2: "#e0722f",
+          rgb: "255, 140, 66",
+        },
       ];
       let themeIdx = 0;
 
@@ -1891,16 +2046,19 @@ The final \`HIP.md\` must be a repo-specific collaboration contract, not a gener
         themeIdx = (themeIdx + 1) % THEMES.length;
         const t = THEMES[themeIdx];
         const root = document.documentElement;
-        root.style.setProperty('--accent', t.accent);
-        root.style.setProperty('--accent2', t.accent2);
-        root.style.setProperty('--accent-rgb', t.rgb);
+        root.style.setProperty("--accent", t.accent);
+        root.style.setProperty("--accent2", t.accent2);
+        root.style.setProperty("--accent-rgb", t.rgb);
 
-        const el = document.getElementById('theme-you');
-        el.style.transform = 'scale(1.18)';
-        setTimeout(() => { el.style.transform = ''; }, 220);
+        const el = document.getElementById("theme-you");
+        el.style.transform = "scale(1.18)";
+        setTimeout(() => {
+          el.style.transform = "";
+        }, 220);
       }
 
       // ── INIT ──
+      detectAgentMode();
       initSingleChips("role-chips");
       initSingleChips("autonomy-chips");
       initSingleChips("intent-chips");

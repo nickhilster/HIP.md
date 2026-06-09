@@ -1,8 +1,8 @@
 #!/usr/bin/env node
-import { existsSync, readFileSync, writeFileSync } from 'fs';
-import { dirname, join, resolve } from 'path';
-import { DEFAULT_ANSWERS } from './constants.js';
-import { formatHelp, formatValidationReport, parseArgs } from './cli.js';
+import { existsSync, readFileSync, writeFileSync } from "fs";
+import { dirname, join, resolve } from "path";
+import { DEFAULT_ANSWERS } from "./constants.js";
+import { formatHelp, formatValidationReport, parseArgs } from "./cli.js";
 import {
   createBootstrapHipTemplate,
   createHipModelFromAnswers,
@@ -11,13 +11,19 @@ import {
   parseHip,
   renderHip,
   validateHip,
-} from './hip.js';
-import { patchAgentFile, patchGitignore } from './patcher.js';
-import { getPreset, listPresets } from './presets.js';
+} from "./hip.js";
+import { patchAgentFile, patchGitignore } from "./patcher.js";
+import { getPreset, listPresets } from "./presets.js";
+import { serveBootstrap } from "./server.js";
 
 const cwd = process.cwd();
 
-const AGENT_FILES = ['CLAUDE.md', 'AGENTS.md', '.cursorrules', 'copilot-instructions.md'];
+const AGENT_FILES = [
+  "CLAUDE.md",
+  "AGENTS.md",
+  ".cursorrules",
+  "copilot-instructions.md",
+];
 
 const options = parseArgs(process.argv.slice(2));
 
@@ -33,40 +39,86 @@ if (options.listPresets) {
   process.exit(0);
 }
 
-if (options.bootstrap) {
-  const hipPath = resolve(cwd, options.output ?? 'HIP.md');
+if (options.bootstrap && !options.serve) {
+  const hipPath = resolve(cwd, options.output ?? "HIP.md");
   if (existsSync(hipPath) && !options.force) {
-    console.error(`${hipPath} already exists. Re-run with --force to overwrite it.`);
+    console.error(
+      `${hipPath} already exists. Re-run with --force to overwrite it.`,
+    );
     process.exit(1);
   }
-  writeFileSync(hipPath, createBootstrapHipTemplate(), 'utf8');
-  console.log('Bootstrap HIP.md written.');
-  console.log('Place it at a repo root and ask an AI agent to follow it.');
-  console.log('The agent will run calibration, inspect the repo, and replace this file with a finalized HIP.md.');
+  writeFileSync(hipPath, createBootstrapHipTemplate(), "utf8");
+  console.log("Bootstrap HIP.md written.");
+  console.log("Place it at a repo root and ask an AI agent to follow it.");
+  console.log(
+    "The agent will run calibration, inspect the repo, and replace this file with a finalized HIP.md.",
+  );
   process.exit(0);
+}
+
+if (options.serve) {
+  const port = options.port ? Number(options.port) : 3000;
+  if (Number.isNaN(port) || port <= 0 || port > 65535) {
+    console.error(`Invalid port: ${options.port}`);
+    process.exit(1);
+  }
+
+  const hipPath = resolve(cwd, options.output ?? "HIP.md");
+  if (options.bootstrap) {
+    if (existsSync(hipPath) && !options.force) {
+      console.error(
+        `${hipPath} already exists. Re-run with --force to overwrite it.`,
+      );
+      process.exit(1);
+    }
+    writeFileSync(hipPath, createBootstrapHipTemplate(), "utf8");
+    console.log("Bootstrap HIP.md written.");
+  }
+
+  if (!existsSync(hipPath)) {
+    console.error(
+      `No HIP.md found at ${hipPath}. Create a bootstrap file with --bootstrap first or pass --bootstrap --serve.`,
+    );
+    process.exit(1);
+  }
+
+  const hipModel = parseHip(readFileSync(hipPath, "utf8"));
+  if (!hipModel.isBootstrap) {
+    console.error(
+      `HIP.md at ${hipPath} does not appear to be a bootstrap file. --serve is intended for agent-led bootstrap intake.`,
+    );
+    process.exit(1);
+  }
+
+  await serveBootstrap({ cwd, port });
 }
 
 if (options.validate) {
   const report = runValidation(resolve(cwd, options.validate));
   console.log(formatValidationReport(report, { json: options.json }));
-  const isValid = report.base.valid && (!report.private || report.private.valid) && (!report.merged || report.merged.valid);
+  const isValid =
+    report.base.valid &&
+    (!report.private || report.private.valid) &&
+    (!report.merged || report.merged.valid);
   process.exit(isValid ? 0 : 1);
 }
 
 const interactive = !isNonInteractive(options);
-const p = interactive ? await import('@clack/prompts') : createConsoleUi();
+const p = interactive ? await import("@clack/prompts") : createConsoleUi();
 
-const hipPath = resolve(cwd, options.output ?? 'HIP.md');
-const privateHipPath = resolve(cwd, options.privateOutput ?? 'HIP.private.md');
+const hipPath = resolve(cwd, options.output ?? "HIP.md");
+const privateHipPath = resolve(cwd, options.privateOutput ?? "HIP.private.md");
 
-p.intro('  HIP.md — Human Interface Protocol  ');
+p.intro("  HIP.md — Human Interface Protocol  ");
 
 const model = await buildModel(options);
 const content = renderHip(model);
 const validation = validateHip(parseHip(content));
 
 if (!validation.valid) {
-  p.cancel(`Generated HIP.md failed validation: ${validation.errors.join('; ')}`);
+  p.cancel(
+    `Generated HIP.md failed validation: ${validation.errors.join("; ")}`,
+  );
   process.exit(1);
 }
 
@@ -77,55 +129,66 @@ if (existsSync(hipPath)) {
     p.cancel(`${hipPath} already exists. Re-run with --force to overwrite it.`);
     process.exit(1);
   } else {
-  const overwrite = await p.confirm({
-    message: 'HIP.md already exists. Overwrite it?',
-    initialValue: false,
-  });
+    const overwrite = await p.confirm({
+      message: "HIP.md already exists. Overwrite it?",
+      initialValue: false,
+    });
 
-  if (p.isCancel(overwrite) || !overwrite) {
-    p.outro('No changes made. Edit HIP.md directly to update your settings.');
-    process.exit(0);
-  }
+    if (p.isCancel(overwrite) || !overwrite) {
+      p.outro("No changes made. Edit HIP.md directly to update your settings.");
+      process.exit(0);
+    }
   }
 }
 
-writeFileSync(hipPath, content, 'utf8');
-p.log.success('HIP.md written.');
+writeFileSync(hipPath, content, "utf8");
+p.log.success("HIP.md written.");
 
 if (options.print) {
   console.log(content);
 }
 
-const shouldCreatePrivate = options.private || (!isNonInteractive(options) && await shouldCreatePrivateTemplate(privateHipPath, options.force));
+const shouldCreatePrivate =
+  options.private ||
+  (!isNonInteractive(options) &&
+    (await shouldCreatePrivateTemplate(privateHipPath, options.force)));
 
 if (shouldCreatePrivate) {
   if (existsSync(privateHipPath) && !options.force) {
-    p.log.warn(`${privateHipPath} already exists — skipped private template creation.`);
+    p.log.warn(
+      `${privateHipPath} already exists — skipped private template creation.`,
+    );
   } else {
-    writeFileSync(privateHipPath, createPrivateHipTemplate(), 'utf8');
-    p.log.success('HIP.private.md template written.');
+    writeFileSync(privateHipPath, createPrivateHipTemplate(), "utf8");
+    p.log.success("HIP.private.md template written.");
   }
 
-  if (options.patchGitignore || (!isNonInteractive(options) && await shouldPatchGitignore())) {
-    const gitignorePath = resolve(cwd, '.gitignore');
+  if (
+    options.patchGitignore ||
+    (!isNonInteractive(options) && (await shouldPatchGitignore()))
+  ) {
+    const gitignorePath = resolve(cwd, ".gitignore");
     const patched = patchGitignore(gitignorePath);
     if (patched) {
-      p.log.success('Patched .gitignore with HIP.private.md.');
+      p.log.success("Patched .gitignore with HIP.private.md.");
     } else {
-      p.log.info('.gitignore already ignores HIP.private.md — skipped.');
+      p.log.info(".gitignore already ignores HIP.private.md — skipped.");
     }
   }
 }
 
 // Offer to patch whichever agent instruction files exist in the repo
-const found = AGENT_FILES.filter(f => existsSync(join(cwd, f)));
+const found = AGENT_FILES.filter((f) => existsSync(join(cwd, f)));
 
 for (const filename of found) {
   const filePath = join(cwd, filename);
-  const patch = options.patchAgentFiles || (!isNonInteractive(options) && await p.confirm({
-    message: `Add HIP.md reference to ${filename}?`,
-    initialValue: true,
-  }));
+  const patch =
+    options.patchAgentFiles ||
+    (!isNonInteractive(options) &&
+      (await p.confirm({
+        message: `Add HIP.md reference to ${filename}?`,
+        initialValue: true,
+      })));
 
   if (!p.isCancel(patch) && patch) {
     const patched = patchAgentFile(filePath);
@@ -137,22 +200,22 @@ for (const filename of found) {
   }
 }
 
-p.outro('Done. Review HIP.md and update it as your work evolves.');
+p.outro("Done. Review HIP.md and update it as your work evolves.");
 
 function runValidation(filePath) {
   if (!existsSync(filePath)) {
     throw new Error(`No HIP.md found at ${filePath}.`);
   }
 
-  const base = parseHip(readFileSync(filePath, 'utf8'));
+  const base = parseHip(readFileSync(filePath, "utf8"));
   const baseResult = validateHip(base);
-  const privatePath = resolve(dirname(filePath), 'HIP.private.md');
+  const privatePath = resolve(dirname(filePath), "HIP.private.md");
 
   if (!existsSync(privatePath)) {
     return { base: baseResult };
   }
 
-  const privateModel = parseHip(readFileSync(privatePath, 'utf8'));
+  const privateModel = parseHip(readFileSync(privatePath, "utf8"));
   const privateResult = validateHip(privateModel, { allowPartial: true });
   const mergedResult = validateHip(mergeHip(base, privateModel));
 
@@ -173,17 +236,17 @@ async function buildModel(currentOptions) {
   }
 
   p.note(
-    'Answer a few short questions to calibrate your human-agent collaboration settings.\n' +
-    'Pick the closest answer — you can edit the file anytime.',
-    'Calibration'
+    "Answer a few short questions to calibrate your human-agent collaboration settings.\n" +
+      "Pick the closest answer — you can edit the file anytime.",
+    "Calibration",
   );
 
-  const { runCalibration } = await import('./prompts.js');
+  const { runCalibration } = await import("./prompts.js");
 
   const answers = await runCalibration();
 
   if (p.isCancel(answers)) {
-    p.cancel('Cancelled. No files were written.');
+    p.cancel("Cancelled. No files were written.");
     process.exit(0);
   }
 
@@ -200,7 +263,7 @@ async function shouldCreatePrivateTemplate(filePath, force) {
   }
 
   const createPrivate = await p.confirm({
-    message: 'Also create a HIP.private.md template for local-only context?',
+    message: "Also create a HIP.private.md template for local-only context?",
     initialValue: false,
   });
 
@@ -209,7 +272,7 @@ async function shouldCreatePrivateTemplate(filePath, force) {
 
 async function shouldPatchGitignore() {
   const patch = await p.confirm({
-    message: 'Add HIP.private.md to .gitignore?',
+    message: "Add HIP.private.md to .gitignore?",
     initialValue: true,
   });
 

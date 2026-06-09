@@ -4,7 +4,7 @@ A standalone web form for generating `HIP.md` — the Human Interface Protocol c
 
 No server. No database. No build step. Pure HTML/CSS/JS.
 
-This page is meant for manual generation. For the agent-led drop-in path, download the bootstrap `HIP.md`, place it at a repo root, and ask the agent to follow it. The agent should create a localhost intake, record the submitted answers locally, inspect the repo in detail, and replace the bootstrap file with a finalized `HIP.md`.
+This page is meant for manual generation. For the agent-led drop-in path, download the bootstrap `HIP.md`, place it at a repo root, and ask the agent to follow it. A local intake server can be launched from the repo using `npx create-hip --serve`, which serves the form on `localhost` and allows the agent or browser to save the final `HIP.md` back into the repo.
 
 ## Deploy to Vercel (recommended)
 
