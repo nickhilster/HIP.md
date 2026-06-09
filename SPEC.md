@@ -33,13 +33,13 @@ HIP.md is a UTF-8 encoded Markdown file. Sections are delimited by H2 headings (
 
 Fields within sections use the inline key-value form:
 
-```
+```text
 Field name: value
 ```
 
 Or a bullet list form:
 
-```
+```text
 - item
 ```
 
@@ -51,7 +51,7 @@ Both forms may coexist within a single file.
 
 HIP.md files should declare their spec version in an HTML comment on line 1:
 
-```md
+```markdown
 <!-- hip-version: 1.0 -->
 ```
 

@@ -47,6 +47,9 @@ export function parseArgs(argv) {
       case '--patch-gitignore':
         options.patchGitignore = true;
         break;
+      case '--bootstrap':
+        options.bootstrap = true;
+        break;
       case '--validate':
         if (argv[index + 1] && !argv[index + 1].startsWith('--')) {
           options.validate = argv[++index];
@@ -66,6 +69,10 @@ export function parseArgs(argv) {
     throw new Error('Use either --defaults or --preset, not both.');
   }
 
+  if (options.bootstrap && (options.defaults || options.preset)) {
+    throw new Error('--bootstrap cannot be combined with --defaults or --preset.');
+  }
+
   if (options.json && !options.validate) {
     throw new Error('--json can only be used with --validate.');
   }
@@ -80,6 +87,7 @@ Usage:
   create-hip
   create-hip --defaults [--output HIP.md] [--private] [--patch-gitignore] [--patch-agent-files]
   create-hip --preset learner [--output HIP.md] [--private]
+  create-hip --bootstrap [--output HIP.md] [--force]
   create-hip --validate [HIP.md] [--json]
   create-hip --list-presets
 
@@ -88,6 +96,7 @@ Options:
   --list-presets         List built-in starter presets
   --preset <name>        Generate from a built-in preset
   --defaults             Generate the default minimal HIP.md without prompts
+  --bootstrap            Write a bootstrap HIP.md for agent-led calibration
   --output <path>        Write HIP.md to a custom path
   --private              Also generate a HIP.private.md template
   --private-output <p>   Write HIP.private.md to a custom path

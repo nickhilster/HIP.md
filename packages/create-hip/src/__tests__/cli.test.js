@@ -7,6 +7,7 @@ import { formatValidationReport, parseArgs } from '../cli.js';
 import { getPreset, listPresets } from '../presets.js';
 import { validateHip } from '../hip.js';
 import { patchGitignore } from '../patcher.js';
+import { VALID_VALUES, SPEC_VERSION, REQUIRED_SECTIONS } from '../constants.js';
 
 test('parseArgs handles non-interactive generation flags', () => {
   const options = parseArgs([
@@ -56,4 +57,45 @@ test('formatValidationReport emits readable text', () => {
 
   assert.match(report, /HIP\.md: invalid/);
   assert.match(report, /Missing required section: Update Rule/);
+});
+
+test('parseArgs --bootstrap sets bootstrap flag', () => {
+  const options = parseArgs(['--bootstrap']);
+  assert.equal(options.bootstrap, true);
+});
+
+test('parseArgs --bootstrap with --output sets output path', () => {
+  const options = parseArgs(['--bootstrap', '--output', 'custom.md']);
+  assert.equal(options.bootstrap, true);
+  assert.equal(options.output, 'custom.md');
+});
+
+test('parseArgs rejects --bootstrap combined with --defaults', () => {
+  assert.throws(
+    () => parseArgs(['--bootstrap', '--defaults']),
+    /cannot be combined/,
+  );
+});
+
+test('parseArgs rejects --bootstrap combined with --preset', () => {
+  assert.throws(
+    () => parseArgs(['--bootstrap', '--preset', 'learner']),
+    /cannot be combined/,
+  );
+});
+
+test('hip-spec.json is in sync with constants.js', () => {
+  const specPath = new URL('../../../../hip-spec.json', import.meta.url);
+  const spec = JSON.parse(readFileSync(specPath, 'utf8'));
+
+  assert.equal(spec.version, SPEC_VERSION, 'version mismatch');
+  assert.deepEqual(spec.requiredSections, REQUIRED_SECTIONS, 'requiredSections mismatch');
+
+  for (const [field, values] of Object.entries(VALID_VALUES)) {
+    assert.deepEqual(
+      spec.validValues[field],
+      values,
+      `validValues["${field}"] out of sync — run npm run generate-spec`,
+    );
+  }
 });

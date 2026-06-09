@@ -15,7 +15,8 @@
   ],
   "scripts": {
     "start": "node src/index.js",
-    "test": "node --test src/__tests__/generator.test.js src/__tests__/hip.test.js src/__tests__/cli.test.js"
+    "test": "node --test src/__tests__/generator.test.js src/__tests__/hip.test.js src/__tests__/cli.test.js",
+    "generate-spec": "node scripts/generate-spec.js"
   },
   "dependencies": {
     "@clack/prompts": "^0.9.0"

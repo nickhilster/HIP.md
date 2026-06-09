@@ -158,7 +158,35 @@ export async function runCalibration() {
     });
     if (p.isCancel(done)) return done;
 
-    const answers = { role, fluency, intent, autonomy, explanation, risk, boundaries, done };
+    const decisionStyle = await p.select({
+      message: 'How should the agent present decisions?',
+      options: [
+        { value: 'One clear recommendation', label: 'One clear recommendation', hint: 'default' },
+        { value: 'Tradeoffs then recommendation', label: 'Tradeoffs then recommendation' },
+        { value: 'Options, human decides', label: 'Options, human decides' },
+        { value: 'Optimize for speed', label: 'Optimize for speed' },
+        { value: 'Optimize for maintainability', label: 'Optimize for maintainability' },
+        { value: 'Optimize for simplicity', label: 'Optimize for simplicity' },
+        { value: 'Optimize for learning', label: 'Optimize for learning' },
+      ],
+    });
+    if (p.isCancel(decisionStyle)) return decisionStyle;
+
+    const feedbackStyle = await p.select({
+      message: 'How should the agent challenge you?',
+      options: [
+        { value: 'Direct', label: 'Direct — say what is wrong, clearly', hint: 'default' },
+        { value: 'Gentle', label: 'Gentle — soften corrections' },
+        { value: 'Challenge weak assumptions', label: 'Challenge weak assumptions' },
+        { value: 'Warn on serious issues only', label: 'Warn on serious issues only' },
+        { value: 'Senior reviewer', label: 'Senior reviewer' },
+        { value: 'Patient teacher', label: 'Patient teacher' },
+        { value: 'Execution partner', label: 'Execution partner — minimize friction' },
+      ],
+    });
+    if (p.isCancel(feedbackStyle)) return feedbackStyle;
+
+    const answers = { role, fluency, intent, autonomy, explanation, risk, boundaries, done, decisionStyle, feedbackStyle };
 
     p.note(formatReview(answers), 'Review');
 
@@ -175,7 +203,7 @@ export async function runCalibration() {
   }
 }
 
-function formatReview({ role, fluency, intent, autonomy, explanation, risk, boundaries, done }) {
+function formatReview({ role, fluency, intent, autonomy, explanation, risk, boundaries, done, decisionStyle, feedbackStyle }) {
   const boundaryBlock = boundaries.length > 0
     ? boundaries.map(item => `- ${item}`).join('\n')
     : '(none specified)';
@@ -188,14 +216,13 @@ function formatReview({ role, fluency, intent, autonomy, explanation, risk, boun
     `Autonomy level: ${autonomy}`,
     `Explanation depth: ${explanation}`,
     `Risk tolerance: ${risk}`,
+    `Decision style: ${decisionStyle}`,
+    `Feedback style: ${feedbackStyle}`,
     '',
     'Approval Required Before',
     boundaryBlock,
     '',
     'Definition of Done',
     doneBlock,
-    '',
-    'Decision style: One clear recommendation',
-    'Feedback style: Direct',
   ].join('\n');
 }

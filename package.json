@@ -1,0 +1,14 @@
+{
+  "name": "hip.md",
+  "private": true,
+  "workspaces": [
+    "packages/create-hip"
+  ],
+  "scripts": {
+    "test": "npm test -w packages/create-hip",
+    "generate-spec": "node packages/create-hip/scripts/generate-spec.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

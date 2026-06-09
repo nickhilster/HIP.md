@@ -1,0 +1,101 @@
+{
+  "version": "1.0",
+  "requiredSections": [
+    "Human Operating Mode",
+    "Approval Required Before",
+    "Definition of Done",
+    "Update Rule"
+  ],
+  "operatingModeFields": [
+    "Role in this repo",
+    "Technical fluency",
+    "Primary intent",
+    "Autonomy level",
+    "Explanation depth",
+    "Risk tolerance",
+    "Decision style",
+    "Feedback style"
+  ],
+  "requiredOperatingModeFields": [
+    "Role in this repo",
+    "Technical fluency",
+    "Primary intent",
+    "Autonomy level",
+    "Explanation depth",
+    "Risk tolerance"
+  ],
+  "validValues": {
+    "Role in this repo": [
+      "Main developer",
+      "Technical founder",
+      "Non-technical founder",
+      "Designer-builder",
+      "Product manager",
+      "Student / learner",
+      "Maintainer",
+      "Researcher",
+      "Domain expert",
+      "Operator directing implementation"
+    ],
+    "Primary intent": [
+      "Ship a feature",
+      "Debug a problem",
+      "Learn the stack",
+      "Prototype quickly",
+      "Refactor safely",
+      "Document the system",
+      "Prepare a demo",
+      "Maintain production code",
+      "Explore an idea"
+    ],
+    "Autonomy level": [
+      "Ask before every meaningful change",
+      "Small safe edits only",
+      "Make changes, pause before structural decisions",
+      "Act autonomously, summarize afterward",
+      "Pair programmer",
+      "Delegated implementation partner"
+    ],
+    "Explanation depth": [
+      "Step by step",
+      "Brief summaries",
+      "Tradeoffs and risks only",
+      "Risks only",
+      "Only when asked",
+      "Teach as we go",
+      "Result first, reasoning on request"
+    ],
+    "Risk tolerance": [
+      "Conservative",
+      "Balanced",
+      "Prototype",
+      "Experimental",
+      "Production-safe"
+    ],
+    "Decision style": [
+      "One clear recommendation",
+      "Tradeoffs then recommendation",
+      "Options, human decides",
+      "Optimize for speed",
+      "Optimize for maintainability",
+      "Optimize for simplicity",
+      "Optimize for learning"
+    ],
+    "Feedback style": [
+      "Direct",
+      "Gentle",
+      "Challenge weak assumptions",
+      "Warn on serious issues only",
+      "Senior reviewer",
+      "Patient teacher",
+      "Execution partner"
+    ]
+  },
+  "technicalFluencyLevels": [
+    "High",
+    "Medium",
+    "Low",
+    "Not applicable"
+  ],
+  "defaultUpdateRule": "If the human corrects the same collaboration behavior twice, ask whether HIP.md should be updated."
+}

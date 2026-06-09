@@ -4,6 +4,7 @@ import { dirname, join, resolve } from 'path';
 import { DEFAULT_ANSWERS } from './constants.js';
 import { formatHelp, formatValidationReport, parseArgs } from './cli.js';
 import {
+  createBootstrapHipTemplate,
   createHipModelFromAnswers,
   createPrivateHipTemplate,
   mergeHip,
@@ -32,6 +33,19 @@ if (options.listPresets) {
   process.exit(0);
 }
 
+if (options.bootstrap) {
+  const hipPath = resolve(cwd, options.output ?? 'HIP.md');
+  if (existsSync(hipPath) && !options.force) {
+    console.error(`${hipPath} already exists. Re-run with --force to overwrite it.`);
+    process.exit(1);
+  }
+  writeFileSync(hipPath, createBootstrapHipTemplate(), 'utf8');
+  console.log('Bootstrap HIP.md written.');
+  console.log('Place it at a repo root and ask an AI agent to follow it.');
+  console.log('The agent will run calibration, inspect the repo, and replace this file with a finalized HIP.md.');
+  process.exit(0);
+}
+
 if (options.validate) {
   const report = runValidation(resolve(cwd, options.validate));
   console.log(formatValidationReport(report, { json: options.json }));
@@ -45,6 +59,8 @@ const p = interactive ? await import('@clack/prompts') : createConsoleUi();
 const hipPath = resolve(cwd, options.output ?? 'HIP.md');
 const privateHipPath = resolve(cwd, options.privateOutput ?? 'HIP.private.md');
 
+p.intro('  HIP.md — Human Interface Protocol  ');
+
 const model = await buildModel(options);
 const content = renderHip(model);
 const validation = validateHip(parseHip(content));
@@ -53,8 +69,6 @@ if (!validation.valid) {
   p.cancel(`Generated HIP.md failed validation: ${validation.errors.join('; ')}`);
   process.exit(1);
 }
-
-p.intro('  HIP.md — Human Interface Protocol  ');
 
 if (existsSync(hipPath)) {
   if (options.force) {

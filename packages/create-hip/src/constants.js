@@ -120,6 +120,8 @@ export const DEFAULT_ANSWERS = {
     'files changed are summarized',
     'next steps are clear',
   ],
+  decisionStyle: 'One clear recommendation',
+  feedbackStyle: 'Direct',
 };
 
 export const PRESET_FILES = {
