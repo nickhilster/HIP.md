@@ -6,6 +6,8 @@ No server. No database. No build step. Pure HTML/CSS/JS.
 
 This page is meant for manual generation. For the agent-led drop-in path, download the bootstrap `HIP.md`, place it at a repo root, and ask the agent to follow it. A local intake server can be launched from the repo using `npx create-hip --serve`, which serves the form on `localhost` and allows the agent or browser to save the final `HIP.md` back into the repo.
 
+Agents must use the HTML intake for the manual/bootstrap path. They should not ask the human to answer the calibration questions in chat unless the human explicitly rejects the browser flow after it is offered.
+
 ## Deploy to Vercel (recommended)
 
 ```bash

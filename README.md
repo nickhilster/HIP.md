@@ -60,6 +60,8 @@ npx create-hip --serve
 
 This command is designed for agents and humans who want the repo-local intake form to launch automatically from the repository.
 
+For the manual/bootstrap path, the agent must use the browser intake. It should not ask you to answer the calibration questions in chat unless you explicitly reject the browser flow after it is offered. The selectable HTML UI is the core product experience.
+
 ### Web form
 
 Open `final/index.html` in any browser or deploy it (zero build step — plain HTML). Fill in the calibration questions and download the generated `HIP.md`.

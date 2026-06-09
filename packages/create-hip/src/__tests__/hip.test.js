@@ -62,6 +62,8 @@ test('bootstrap HIP template gives agents the local intake workflow', () => {
   const template = createBootstrapHipTemplate();
 
   assert.match(template, /<!-- hip-bootstrap: 1\.0 -->/);
+  assert.match(template, /must not collect calibration answers in chat/i);
+  assert.match(template, /must always launch or create the HTML intake/i);
   assert.match(template, /run it on localhost/);
   assert.match(template, /show a clear visual confirmation/);
   assert.match(template, /replace this bootstrap file with a finalized `HIP\.md`/);

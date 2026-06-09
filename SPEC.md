@@ -303,6 +303,7 @@ When no `HIP.md` exists, a compliant agent or tool may offer to run calibration.
 - Allow the human to correct answers before writing the file
 - Produce a file that conforms to this spec
 - Not require any tool or package installation to trigger
+- Use the browser HTML intake when the human chooses or requests the manual/bootstrap path; agents must not replace that path with chat questions.
 
 ### 9.1 Bootstrap `HIP.md`
 
@@ -312,7 +313,7 @@ A repo may contain a temporary bootstrap `HIP.md` instead of a finalized collabo
 <!-- hip-bootstrap: 1.0 -->
 ```
 
-When a compliant agent finds a bootstrap `HIP.md` at repo root, it must treat it as an instruction to perform repo-local calibration:
+When a compliant agent finds a bootstrap `HIP.md` at repo root, it must treat it as an instruction to perform repo-local browser calibration. The agent must not collect calibration answers in chat, and must not decide that chat questions are an acceptable substitute for the manual path. The HTML intake is the required product experience because it gives the human structured selection, review, and confirmation.
 
 1. Inspect the repository for project type, package manager, run commands, existing agent instruction files, and visible UI or design-system signals.
 2. Create and run a localhost HTML intake experience.

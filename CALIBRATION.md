@@ -3,6 +3,8 @@
 This document defines the canonical first-run calibration flow for HIP.md.
 Implementations may vary the UI, but they should preserve the same prompt order, use structured choices, allow review before write, and avoid collecting anything outside repo collaboration needs.
 
+When the human requests the manual path, drops a bootstrap `HIP.md`, or asks the agent to take them through HIP.md setup in a browser, the agent must launch or create the HTML intake. The agent must not collect the calibration answers in chat unless the human explicitly rejects the browser intake after it is offered.
+
 ## Canonical Flow
 
 ### Preflight
@@ -88,6 +90,7 @@ At least one definition-of-done item must be selected.
 ## Behavioral Rules
 
 - Use structured choices only, not open-ended questions.
+- For the manual/bootstrap path, collect answers in the HTML intake, not in chat.
 - If the human cancels at any point, exit without writing files.
 - Generate a `HIP.md` that conforms to [SPEC.md](SPEC.md).
 - After writing `HIP.md`, the tool may offer to patch existing agent instruction files such as `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, and `copilot-instructions.md`.
@@ -95,7 +98,7 @@ At least one definition-of-done item must be selected.
 
 ## Agent-Led Browser Intake
 
-When the human drops a bootstrap `HIP.md` into a repo root with no other context, the agent should run calibration through a temporary localhost HTML intake:
+When the human drops a bootstrap `HIP.md` into a repo root with no other context, the agent must run calibration through a temporary localhost HTML intake. The agent must not ask the calibration questions in chat or decide on the human's behalf that chat is faster. The HTML UI is the hero of the product and is required for the manual path:
 
 1. Inspect the repo before designing the intake. Look for app framework, package manager, scripts, existing docs, agent instruction files, UI components, design tokens, CSS variables, typography, color, spacing, and screenshots or public pages when available.
 2. Create the smallest practical local HTML experience needed to collect the canonical fields.
