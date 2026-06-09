@@ -2,7 +2,12 @@
 
 **How to use**
 
-This product runs best inside the repository where it is dropped. Open `final/index.html` or deploy the `final/` static site from this repo, answer the calibration prompts, and download a ready-to-commit `HIP.md` file.
+HIP.md supports two first-run paths:
+
+1. Run `npx create-hip` from the root of any repo to generate a ready-to-commit `HIP.md`.
+2. Drop a bootstrap `HIP.md` into a repo root and ask your agent to follow it. The agent should inspect the repo, create a localhost HTML intake, follow any existing UI design signals, record your submitted choices locally, then replace the bootstrap file with a finalized repo-specific `HIP.md`.
+
+The standalone web form in `final/index.html` is useful for manual generation or publishing a hosted intake form, but the drop-in bootstrap path is agent-led and repo-local by design.
 
 Once downloaded, keep `HIP.md` at the repo root alongside `AGENTS.md`, `CLAUDE.md`, or your other agent guidance docs. The page includes a built-in "How to use" popup for repeat onboarding and repo-local usage guidance.
 

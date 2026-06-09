@@ -586,6 +586,19 @@
         display: none;
       }
 
+      .output-confirmation {
+        padding: 14px 20px;
+        background: rgba(var(--accent-rgb), 0.08);
+        border-bottom: 1px solid rgba(var(--accent-rgb), 0.15);
+        color: var(--text);
+        font-size: 13px;
+      }
+
+      .output-confirmation strong {
+        color: var(--accent);
+        font-weight: 500;
+      }
+
       .output-pre {
         padding: 22px 20px;
         background: var(--bg);
@@ -775,7 +788,7 @@
         </div>
         <h1>Calibrate how your<br />agent works with <em id="theme-you" onclick="cycleTheme()">you</em></h1>
         <p class="subtitle">
-          Answer five questions. Get a ready-to-commit
+          Answer the calibration questions. Get a ready-to-commit
           <code
             style="
               font-family: var(--mono);
@@ -802,7 +815,7 @@
           type="button"
         >
           <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v9M4 8l4 4 4-4"/><path d="M2 14h12"/></svg>
-          Download blank HIP.md
+          Download bootstrap HIP.md
         </button>
       </div>
 
@@ -822,32 +835,36 @@
           </button>
           <h2>How to use HIP.md</h2>
           <p>
-            This tool works best inside the repository where it is dropped.
-            Generate <code style="font-family: var(--mono)">HIP.md</code> from
-            the repo root, then keep that file in the same repository as your AI
-            guidance docs.
+            Use this page to manually generate a finalized
+            <code style="font-family: var(--mono)">HIP.md</code>. For the
+            agent-led path, download the bootstrap file, place it at a repo
+            root, and ask the agent to follow it.
           </p>
           <ul>
-            <li>Answer the five calibration questions in the app.</li>
-            <li>Download the generated <code>HIP.md</code> file.</li>
             <li>
-              Move it to the repo root alongside <code>AGENTS.md</code>,
-              <code>CLAUDE.md</code>, or your custom agent guidance files.
+              Manual path: answer the calibration questions, then download the
+              generated <code>HIP.md</code>.
             </li>
             <li>
-              Commit the file so the repo-local collaboration contract is
-              available to your agent.
+              Agent-led path: drop the bootstrap <code>HIP.md</code> into a
+              repo root. The agent should create a localhost intake, follow
+              existing UI signals, record your choices, inspect the repo, and
+              replace the bootstrap with the final file.
+            </li>
+            <li>
+              Keep the finalized file alongside <code>AGENTS.md</code>,
+              <code>CLAUDE.md</code>, or your custom agent guidance files.
             </li>
           </ul>
           <p>
             Use this built-in popup whenever you need onboarding guidance.
-            Running the page from the same repository where HIP.md belongs gives
-            the best results.
+            Repo-local calibration gives the best results because the final file
+            can reflect both your choices and the project context.
           </p>
           <div class="modal-download">
             <button class="btn-action primary btn-download-tpl" onclick="downloadTemplate()" type="button">
               <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v9M4 8l4 4 4-4"/><path d="M2 14h12"/></svg>
-              Download blank HIP.md
+              Download bootstrap HIP.md
             </button>
           </div>
         </div>
@@ -1377,6 +1394,10 @@
             </button>
           </div>
         </div>
+        <div class="output-confirmation" id="output-confirmation">
+          <strong>Feedback captured.</strong> Review the generated HIP.md below,
+          then download or copy it into your repo root.
+        </div>
         <pre class="output-pre" id="output-pre" aria-live="polite"></pre>
       </div>
 
@@ -1819,36 +1840,39 @@ Autonomy level: ${autonomy}`;
 
       // ── TEMPLATE DOWNLOAD ──
       function downloadTemplate() {
-        const today = new Date().toISOString().split('T')[0];
-        const text = `# HIP.md — Human Interface Protocol
-<!-- v1.0 — template — fill in your preferences, then commit to repo root -->
+        const text = `<!-- hip-bootstrap: 1.0 -->
+# HIP.md — Human Interface Protocol Bootstrap
 
-## Human Operating Mode
+This is a temporary bootstrap file. It exists to let an AI agent calibrate repo-local collaboration when the human has only dropped \`HIP.md\` into the repository root.
 
-Role in this repo: [main developer | technical founder | non-technical founder | designer-builder | product manager | student / learner | maintainer | researcher | domain expert | operator directing implementation]
-Technical fluency: medium overall
-  (code: intermediate, Git: intermediate, terminal: intermediate, deployment: intermediate, architecture: intermediate, database: intermediate)
-Autonomy level: [ask before every meaningful change | make small safe edits only | pause before structural decisions | act autonomously, summarize afterward | operate like a pair programmer | operate like a delegated implementation partner]
+## Agent Bootstrap Protocol
 
-## Approval Required Before
+When an agent finds this file at repo root and no finalized HIP.md exists, it must:
 
-- auth
-- database schema
-- deployment config
-- [add your own boundaries]
+1. Inspect the repository enough to identify project type, package manager, run commands, existing agent instruction files, and any visible UI or design-system signals.
+2. Create a small repo-local HTML intake experience and run it on localhost.
+3. If existing UI signals are present, follow those visual patterns for layout, typography, color, spacing, and controls. If none are present, use a clean accessible default.
+4. Ask the human to make structured collaboration choices in the browser. Do not ask for secrets, credentials, or unrelated personal information.
+5. On submit, record the answers locally in the workspace and show a clear visual confirmation that the feedback was recorded.
+6. Combine the submitted answers with detailed repo context to replace this bootstrap file with a finalized \`HIP.md\` that conforms to the HIP.md spec.
+7. Remove any temporary intake files unless the human asks to keep them.
 
-## Definition of Done
+## Required Intake Fields
 
-Work is not done until:
+- Role in this repo
+- Technical fluency
+- Primary intent
+- Autonomy level
+- Explanation depth
+- Risk tolerance
+- Approval required before
+- Definition of done
+- Decision style
+- Feedback style
 
-- code compiles and tests pass
-- feature works locally
-- [add your own criteria]
+## Output Requirement
 
-## Update Rule
-
-If the human corrects the same collaboration behavior twice,
-ask whether HIP.md should be updated.
+The final \`HIP.md\` must be a repo-specific collaboration contract, not a generic template. It should reflect both the human choices and concrete repository context discovered during inspection.
 `;
         const blob = new Blob([text], { type: 'text/markdown;charset=utf-8' });
         const a = document.createElement('a');

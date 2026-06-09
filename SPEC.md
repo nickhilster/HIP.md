@@ -304,6 +304,26 @@ When no `HIP.md` exists, a compliant agent or tool may offer to run calibration.
 - Produce a file that conforms to this spec
 - Not require any tool or package installation to trigger
 
+### 9.1 Bootstrap `HIP.md`
+
+A repo may contain a temporary bootstrap `HIP.md` instead of a finalized collaboration contract. Bootstrap files declare:
+
+```md
+<!-- hip-bootstrap: 1.0 -->
+```
+
+When a compliant agent finds a bootstrap `HIP.md` at repo root, it must treat it as an instruction to perform repo-local calibration:
+
+1. Inspect the repository for project type, package manager, run commands, existing agent instruction files, and visible UI or design-system signals.
+2. Create and run a localhost HTML intake experience.
+3. Match existing UI signals when present; otherwise use a clean accessible default.
+4. Let the human make structured choices in the browser.
+5. On submit, record the answers locally and show a clear visual confirmation that the feedback was recorded.
+6. Combine the submitted choices with detailed repository context.
+7. Replace the bootstrap file with a finalized spec-compliant `HIP.md`.
+
+Bootstrap files are not final HIP contracts and should not be validated as complete HIP.md files.
+
 The reference calibration CLI is defined at `nickhilster/create-hip`.
 The canonical first-run prompt sequence for the reference implementation is documented in `CALIBRATION.md`.
 

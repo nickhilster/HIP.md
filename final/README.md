@@ -4,7 +4,7 @@ A standalone web form for generating `HIP.md` — the Human Interface Protocol c
 
 No server. No database. No build step. Pure HTML/CSS/JS.
 
-This page is meant for use from the repository where `HIP.md` should live. Generate the file in the repo root, download it, and commit it alongside your AI guidance files for best repo-local results.
+This page is meant for manual generation. For the agent-led drop-in path, download the bootstrap `HIP.md`, place it at a repo root, and ask the agent to follow it. The agent should create a localhost intake, record the submitted answers locally, inspect the repo in detail, and replace the bootstrap file with a finalized `HIP.md`.
 
 ## Deploy to Vercel (recommended)
 
@@ -37,14 +37,15 @@ npx serve .
 
 ## What it does
 
-1. Asks 5 required calibration questions (role, fluency, autonomy, boundaries, definition of done)
+1. Asks the core calibration questions for role, fluency, autonomy, boundaries, and definition of done
 2. Optional section for explanation depth, risk tolerance, decision style, feedback style
-3. Generates a `HIP.md` file with syntax highlighting
-4. Download `.md` directly or copy to clipboard
+3. Captures the feedback in the browser and shows a visual confirmation
+4. Generates a `HIP.md` file with syntax highlighting
+5. Download `.md` directly or copy to clipboard
 
 ## Adding to a repo
 
-After downloading, move `HIP.md` to your repo root alongside `AGENTS.md` or `CLAUDE.md`.
+After downloading a finalized `HIP.md`, move it to your repo root alongside `AGENTS.md` or `CLAUDE.md`. For agent-led calibration, use the bootstrap download instead.
 
 ## License
 

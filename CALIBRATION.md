@@ -92,3 +92,16 @@ At least one definition-of-done item must be selected.
 - Generate a `HIP.md` that conforms to [SPEC.md](SPEC.md).
 - After writing `HIP.md`, the tool may offer to patch existing agent instruction files such as `AGENTS.md`, `CLAUDE.md`, `.cursorrules`, and `copilot-instructions.md`.
 - The flow must not request secrets, credentials, or private information unrelated to repo collaboration.
+
+## Agent-Led Browser Intake
+
+When the human drops a bootstrap `HIP.md` into a repo root with no other context, the agent should run calibration through a temporary localhost HTML intake:
+
+1. Inspect the repo before designing the intake. Look for app framework, package manager, scripts, existing docs, agent instruction files, UI components, design tokens, CSS variables, typography, color, spacing, and screenshots or public pages when available.
+2. Create the smallest practical local HTML experience needed to collect the canonical fields.
+3. Run it on localhost and give the human the URL.
+4. If UI signals exist, follow them. If not, use a clean accessible default with clear hierarchy and responsive behavior.
+5. Submit answers to a local endpoint or local file-writing mechanism controlled by the agent process.
+6. Show visual confirmation in the HTML only after the answers were actually recorded.
+7. Use both the recorded answers and detailed repo context to write the final `HIP.md`.
+8. Remove temporary intake files unless the human asks to keep them.

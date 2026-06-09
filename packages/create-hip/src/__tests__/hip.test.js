@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import { readdirSync, readFileSync } from 'node:fs';
 import {
   createHipModelFromAnswers,
+  createBootstrapHipTemplate,
   createPrivateHipTemplate,
   mergeHip,
   parseHip,
@@ -55,4 +56,23 @@ test('private HIP templates validate as partial overrides', () => {
   const result = validateHip(parseHip(template), { allowPartial: true });
 
   assert.equal(result.valid, true);
+});
+
+test('bootstrap HIP template gives agents the local intake workflow', () => {
+  const template = createBootstrapHipTemplate();
+
+  assert.match(template, /<!-- hip-bootstrap: 1\.0 -->/);
+  assert.match(template, /run it on localhost/);
+  assert.match(template, /show a clear visual confirmation/);
+  assert.match(template, /replace this bootstrap file with a finalized `HIP\.md`/);
+});
+
+test('bootstrap HIP template validates as a bootstrap, not a final contract', () => {
+  const parsed = parseHip(createBootstrapHipTemplate());
+  const result = validateHip(parsed);
+
+  assert.equal(parsed.isBootstrap, true);
+  assert.equal(parsed.bootstrapVersion, '1.0');
+  assert.equal(result.valid, true);
+  assert.match(result.warnings.join('\n'), /run repo-local calibration/);
 });

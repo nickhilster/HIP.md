@@ -95,14 +95,56 @@ export function createPrivateHipTemplate() {
   ].join('\n');
 }
 
+export function createBootstrapHipTemplate() {
+  return [
+    '<!-- hip-bootstrap: 1.0 -->',
+    '# HIP.md — Human Interface Protocol Bootstrap',
+    '',
+    'This is a temporary bootstrap file. It exists to let an AI agent calibrate repo-local collaboration when the human has only dropped `HIP.md` into the repository root.',
+    '',
+    '## Agent Bootstrap Protocol',
+    '',
+    'When an agent finds this file at repo root and no finalized HIP.md exists, it must:',
+    '',
+    '1. Inspect the repository enough to identify project type, package manager, run commands, existing agent instruction files, and any visible UI or design-system signals.',
+    '2. Create a small repo-local HTML intake experience and run it on localhost.',
+    '3. If existing UI signals are present, follow those visual patterns for layout, typography, color, spacing, and controls. If none are present, use a clean accessible default.',
+    '4. Ask the human to make structured collaboration choices in the browser. Do not ask for secrets, credentials, or unrelated personal information.',
+    '5. On submit, record the answers locally in the workspace and show a clear visual confirmation that the feedback was recorded.',
+    '6. Combine the submitted answers with detailed repo context to replace this bootstrap file with a finalized `HIP.md` that conforms to the HIP.md spec.',
+    '7. Remove any temporary intake files unless the human asks to keep them.',
+    '',
+    '## Required Intake Fields',
+    '',
+    '- Role in this repo',
+    '- Technical fluency',
+    '- Primary intent',
+    '- Autonomy level',
+    '- Explanation depth',
+    '- Risk tolerance',
+    '- Approval required before',
+    '- Definition of done',
+    '- Decision style',
+    '- Feedback style',
+    '',
+    '## Output Requirement',
+    '',
+    'The final `HIP.md` must be a repo-specific collaboration contract, not a generic template. It should reflect both the human choices and concrete repository context discovered during inspection.',
+    '',
+  ].join('\n');
+}
+
 export function parseHip(markdown) {
   const content = normalizeLineEndings(markdown);
   const versionMatch = content.match(/<!--\s*hip-version:\s*([^\s]+)\s*-->/i);
+  const bootstrapMatch = content.match(/<!--\s*hip-bootstrap:\s*([^\s]+)\s*-->/i);
   const titleMatch = content.match(/^#\s+(.+)$/m);
   const sections = splitSections(content);
 
   return {
     version: versionMatch?.[1] ?? null,
+    bootstrapVersion: bootstrapMatch?.[1] ?? null,
+    isBootstrap: Boolean(bootstrapMatch),
     title: titleMatch?.[1]?.trim() ?? null,
     humanOperatingMode: parseKeyValueSection(sections['Human Operating Mode']),
     technicalFluency: parseTechnicalFluencySection(sections['Technical Fluency']),
@@ -151,6 +193,15 @@ export function mergeHip(baseModel, overrideModel) {
 
 export function validateHip(model, options = {}) {
   const { allowPartial = false } = options;
+  if (model.isBootstrap) {
+    return {
+      valid: true,
+      errors: [],
+      warnings: ['Bootstrap HIP.md detected; run repo-local calibration before treating it as a final HIP.md contract.'],
+      model,
+    };
+  }
+
   const normalized = normalizeModel(model, { partial: allowPartial });
   const presentSections = new Set(model.sectionsPresent ?? []);
   const errors = [];
